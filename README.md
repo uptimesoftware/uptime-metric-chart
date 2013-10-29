@@ -1,6 +1,6 @@
 uptime-metric-chart
 ===================
-![Image](https://github.com/uptimesoftware/uptime-plugin-manager/blob/master/metric_chart.png?raw=true)
+![Image](https://raw.github.com/uptimesoftware/uptime-metric-chart/master/metric-chart-sm.png)
 
 ## Description
 
