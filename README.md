@@ -1,7 +1,6 @@
 uptime-metric-chart
 ===================
-
-Dynamically create real-time dashboard charts from any performance or custom metric in up.time
+![Image](https://github.com/uptimesoftware/uptime-plugin-manager/blob/master/metric_chart.png?raw=true)
 
 ## Description
 
@@ -19,3 +18,22 @@ The Metric Chart gadget makes it possible to graph metrics collected by up.time 
 * Enables extensive visual and console logging for easy troubleshooting
 * Supported on Windows and Linux up.time monitoring stations
 * Tell us which features you would like to see in a future release!
+
+### Version Compatibility
+
+                        | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
+    --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
+      Metric Chart v1.0 | X   |     |     |     |     |     |     |     |
+
+### Installation Notes
+
+1. Install using Plug-in Manager, following the standard process. 
+2. Refresh dashboard layouts to see the new ones. 
+3. Refresh the gadgets to see Metric Chart. 
+4. Have fun!
+
+
+Thanks,
+
+The up.time Team
+support@uptimesoftware.com
