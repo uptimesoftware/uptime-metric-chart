@@ -1,5 +1,3 @@
-uptime-metric-chart
-===================
 ![Image](https://raw.github.com/uptimesoftware/uptime-metric-chart/master/metric-chart-sm.png)
 
 ## Description
