@@ -1,4 +1,4 @@
-![Image](https://raw.github.com/uptimesoftware/uptime-metric-chart/master/metric-chart-sm.png)
+![Image](https://raw.github.com/uptimesoftware/uptime-metric-chart/master/img/logos/metric-chart-sm.png)
 ### Description
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to housing your new graphs.
 
