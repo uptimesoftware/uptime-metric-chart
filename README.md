@@ -1,8 +1,8 @@
 ![Image](https://raw.github.com/uptimesoftware/uptime-metric-chart/master/img/logos/metric-chart-sm.png)
-### Description
+###Description
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to housing your new graphs.
 
-### Features
+###Features
 * Serves up collected metrics as beautiful and responsive line or area graphs
 * Designed with the end-user experience in mind
 * Leverages latest web technologies for light-weight, yet beautiful results
@@ -12,36 +12,34 @@ The Metric Chart gadget makes it possible to graph metrics collected by up.time 
 * Equipped with robust validation and condition handling
 * Enables extensive visual and console logging for easy troubleshooting
 * Supported on Windows and Linux up.time monitoring stations
-* Tell us which features you would like to see in a future release!
+* _Tell us which features you would like to see in a future release!_
 
-### Version Compatibility
+###Version Compatibility
                         | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
     --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
       Metric Chart v1.0 | X   |     |     |     |     |     |     |     |
 
-### Installation Notes
-1. Install using Plug-in Manager, following the standard process. 
-2. Refresh dashboard layouts to see the new ones. 
-3. Refresh the gadgets to see Metric Chart. 
-4. Have fun!
+###Known Limitations
+By default, Metric Chart currently expects a standard Monitoring Station configuration, leveraging a MySQL database with default credentials.  However, the MySQL connection settings can be modified to match your environment.
 
-### Usage Instructions
-1. Pick a metric type
-2. Select a desired monitor and metric
-3. Choose the element and monitor instance
-4. Select the time frame and refresh interval
-5. Pick a chart type, and chose whether the title should br displayed
-6. Graph it!
+###Candidate Features
+* More metrics and metric types
+* Multiple series in one chart
+* Trend lines
+* Multi-select
+* Additional chart types (bar, pie, guage)
+* Expand time span options
+* Zooming
+* _Your enhancement requests!_
 
-* Open the configuration dialog by double-clicking on the chart
-* Double-click on the eye icon to toggle verbose logging on and off
-
-### Known Limitations:
-Metric Chart currently expects a default Monitoring Station configuration, leveraging a MySQL database with default credentials.  
-
+###Advanced Instructions
+Modifying database connection settings:
+1. Step A
+2. Step B
+3. Step C
 ---
 
-Thanks,
+Thanks!
 
 The up.time Team
 support@uptimesoftware.com
