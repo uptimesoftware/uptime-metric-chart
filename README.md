@@ -31,6 +31,7 @@ By default, Metric Chart currently expects a standard Monitoring Station configu
 * Expand time span options
 * Zooming
 * _Your enhancement requests!_
+
 ###Advanced Instructions
 Modifying database connection settings:|
 1. Step A
