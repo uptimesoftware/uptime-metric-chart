@@ -33,7 +33,7 @@ By default, Metric Chart currently expects a standard Monitoring Station configu
 * _Your enhancement requests!_
 
 ###Advanced Instructions
-Modifying database connection settings:|
+Modifying database connection settings:
 1. Step A
 2. Step B
 3. Step C
