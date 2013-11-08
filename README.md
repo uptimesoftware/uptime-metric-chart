@@ -3,15 +3,13 @@
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to housing your new graphs.
 
 ###Features
-* Serves up collected metrics as beautiful and responsive line or area graphs
+* Visualize metrics in the form of responsive line or area graphs 
 * Designed with the end-user experience in mind
-* Leverages latest web technologies for light-weight, yet beautiful results
-* Provides an intuitive configuration wizard
-* Offers a configurable data time frame and refresh interval
-* Sleek in-control refresh
-* Equipped with robust validation and condition handling
-* Enables extensive visual and console logging for easy troubleshooting
-* Supported on Windows and Linux up.time monitoring stations
+* Leveraging latest web technologies for light-weight, beautiful results
+* Intuitive configuration wizard
+* Adjustable time frame and refresh interval
+* Robust validation and error handling
+* Extensive visual and console logging for easy troubleshooting
 * _Tell us which features you would like to see in a future release!_
 
 ###Version Compatibility
@@ -33,10 +31,6 @@ By default, Metric Chart currently expects a standard Monitoring Station configu
 * _Your enhancement requests!_
 
 ###Advanced Instructions
-####Modifying database connection settings:
-1. Step A
-2. Step B
-3. Step C
 
 ---
 
