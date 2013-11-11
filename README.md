@@ -21,7 +21,8 @@ By default, Metric Chart currently expects a standard Monitoring Station configu
 * _Your enhancement requests!_
 
 ###Advanced Instructions
-
+* Open the configuration dialog by double-clicking on the chart
+* Double-click on the eye icon to toggle verbose logging on and off
 ---
 
 Thanks!
