@@ -6,7 +6,6 @@ The Metric Chart gadget makes it possible to graph metrics collected by up.time 
                         | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
     --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
       Metric Chart v2.0 | X   |     |     |     |     |     |     |     |
-    --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
       Metric Chart v1.0 | X   |     |     |     |     |     |     |     |
 
 ###Known Limitations
