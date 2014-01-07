@@ -5,10 +5,12 @@ The Metric Chart gadget makes it possible to graph metrics collected by up.time 
 ###Version Compatibility
                         | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
     --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
+      Metric Chart v2.0 | X   |     |     |     |     |     |     |     |
+    --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
       Metric Chart v1.0 | X   |     |     |     |     |     |     |     |
 
 ###Known Limitations
-By default, Metric Chart currently expects a standard Monitoring Station configuration, leveraging a MySQL database with default credentials.  However, the MySQL connection settings can be modified to match your environment.
+By default, Metric Chart currently expects a standard Monitoring Station configuration, leveraging a MySQL/Oracle database.  However, the Oracle/MySQL connection settings can be modified to match your environment.
 
 ###Candidate Features
 * More metrics and metric types
