@@ -23,9 +23,9 @@ To get this working with Oracle backend you need to do the following:
 1. Install unixODBC via your package manager (ie. yum install unixodbc) . This will install unixODBC into your '/usr/lib64/' directory.
 2. Download and Install the latest version of the 'Oracle Instant Client Basic' package, available from Oracle here. Keep in mind that up.time 7.2 comes bundled with 64bit Apache/PHP so you will need the Linux x86-64 package. ie. oracle-instantclient12.1-basic-12.1.0.1.0-1.x86_64.rpm . (The 12.1 package works with 11g Databases as well). This package will install some of the requires binaries/drivers for Oracle into /usr/lib/oracle/<version>/client64/lib/
 3. Download and install the ' ODBC: Additional libraries' package from Oracle (ie. oracle-instantclient12.1-odbc-12.1.0.1.0-1.x86_64.rpm  ). This provides the actual ODBC Driver we need from Oracle.
-4. Edit the /etc/init.d/uptime_httpd script that starts up.time's apache, and add the below lines to set some of the required environment variables
-   This should be towards the beginning of the script, immediately after the 'export MIBDIRS' line  ).
-   Make sure to change <version>  in the Oracle_HOME to the correct version for the path where the drivers were installed in Step 2 above.
+4. Edit the /etc/init.d/uptime_httpd script that starts up.time's apache, and add the below lines to set some of the required environment variables.
+This should be towards the beginning of the script, immediately after the 'export MIBDIRS' line  ).
+Make sure to change <version>  in the Oracle_HOME to the correct version for the path where the drivers were installed in Step 2 above.
 
 export ORACLE_HOME=/usr/lib/oracle/<version>/client64
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME/lib
