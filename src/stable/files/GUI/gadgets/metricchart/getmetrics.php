@@ -89,7 +89,8 @@ if ($dbType == "mysql"){
 	}
 elseif($dbType == "oracle"){
 	// Oracle Connection details
-	$db = odbc_connect("Driver=/usr/lib/oracle/12.1/client64/lib/libsqora.so.12.1;Server=".$dbHost.";Port=".$dbPort.";Database=".$dbName, $dbUsername, $dbPassword);
+	$ORACLE_HOME = getenv('ORACLE_HOME');
+	$db = odbc_connect("Driver=" . $ORACLE_HOME . "/lib/libsqora.so.12.1;DBq=".$dbHost.":".$dbPort."/".$dbName, $dbUsername, $dbPassword);
 	if (!$db){
 		//printf("Connection Failed: %s</br>" odbc_errormsg());
 		exit();
