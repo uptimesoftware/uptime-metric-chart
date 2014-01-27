@@ -24,11 +24,17 @@ $service_monitor = explode("-", $_GET['monitor']);
 $erdc_parameter_id = $service_monitor[0];
 $data_type_id = $service_monitor[1];
 $performance_monitor = $_GET['monitor'];
-$element = explode("-", $_GET['element']);
+$elementList = explode(",", $_GET['element']);
+//$element = explode("-", $_GET['element']);
+$element = explode("-", $elementList);
+/*
 $element_id = $_GET['element'];
 $entity_id = $element[0];
 $erdc_instance_id = $element[1];
+*/
 $json = array();
+$oneElement = array();
+$performanceData = array();
 //date_default_timezone_set('UTC');
 $UPTIME_CONF="../../../uptime.conf";
 
@@ -124,13 +130,14 @@ if ($query_type == "monitors") {
 		// Get results
 		while ($row = mysqli_fetch_assoc($result)) {
 			//Currently only show integer and decimal -type data
-		    if ($row['data_type_id'] == 2 or $row['data_type_id'] == 3) {
+		    //if ($row['data_type_id'] == 2 or $row['data_type_id'] == 3 or $row['data_type_id'] == 6) {
+		    if ($row['data_type_id'] == 2 or $row['data_type_id'] == 3 ) {
 		        $json[$row['erdc_param'] . "-" . $row['data_type_id']] =
 				$row['name'] . " - " . $row['short_desc']
 				//. " (" . $row['units'] . ")"
 				;
 				}
-        	} 
+        	}
 		// Close the DB connection
 		$result->close();
 	}
@@ -142,7 +149,7 @@ if ($query_type == "monitors") {
 			}
 		// Get results
 		while (odbc_fetch_row($result)) {
-			//Currently only show integer and decimal -type data
+			//Currently only show integer, decimal and ranged-type data 
 			if (odbc_result($result,"data_type_id") == 2 or odbc_result($result,"data_type_id") == 3) {
 				$json[odbc_result($result,"ERDC_PARAM") . "-" . odbc_result($result,"data_type_id")] =
 				odbc_result($result,"name") . " - " . odbc_result($result,"short_desc")
@@ -197,7 +204,38 @@ elseif ($query_type == "elements_for_monitor") {
     // Echo results as JSON
     echo json_encode($json);
     }
+	
+elseif ($query_type == "ranged_instances") {
+//echo "erdc_instance_id = $erdc_instance_id\n";
+	$sql = "select * 
+                from ranged_object ro
+                where ro.instance_id = $erdc_instance_id               
+                ";
 
+	if ($dbType == "mysql"){		
+		$result = mysqli_query($db, $sql);
+		// Check query
+		if (!$result) {
+			die('Invalid query: ' . mysqli_error());
+			}
+		// Get results
+		while ($row = mysqli_fetch_assoc($result)) {
+			$json[$row['instance_id']. "-" . $row['id']]
+				= $row['object_name'];
+			}
+		
+		// Close the DB connection
+		$result->close();
+	}
+	else{
+	}
+	
+	// Echo results as JSON
+    echo json_encode($json);
+				
+}
+	
+	
 //Enumerate metrics for specific monitor/element instance
 elseif ($query_type == "servicemonitor") {
     
@@ -206,65 +244,103 @@ elseif ($query_type == "servicemonitor") {
     //echo $data_type_id  . "\n";
     //echo $entity_id  . "\n";
     //echo $erdc_instance_id . "\n";
-    
-    if ($data_type_id == 2) {
-        $sql = "select * 
-                from erdc_int_data eid
-                where eid.erdc_instance_id = $erdc_instance_id
-                and eid.erdc_parameter_id = $erdc_parameter_id 
-                ";
-    } elseif ($data_type_id == 3) {
-        $sql = "select * 
-                from erdc_decimal_data eid
-                where eid.erdc_instance_id = $erdc_instance_id
-                and eid.erdc_parameter_id = $erdc_parameter_id
-                order by erdc_int_data_id DESC
-                ";
-    } else {
-        die('Invalid query');
-        }
-        
-	if ($dbType == "mysql"){
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
+	
+	//$elementList is an array where each item is elementID-erdcID 
+	$erdc_instance_id_array = explode(",",$erdc_instance_id);
+	$i = 0;
+	foreach ($elementList as $element_id_and_erdc_id) {
+		
+		$ids = explode("-", $element_id_and_erdc_id);
+		$element_id = $ids[0];
+		$erdc_instance_id = $ids[1];
+		
+		if ($data_type_id == 2) {
+			$sql = "select * 
+					from erdc_int_data eid
+					where eid.erdc_instance_id = $erdc_instance_id
+					and eid.erdc_parameter_id = $erdc_parameter_id 
+					and sampletime > date_sub(now(),interval  ". $time_frame . " second)
+					order by sampletime";
+		} elseif ($data_type_id == 3) {
+			$sql = "select * 
+					from erdc_decimal_data eid
+					where eid.erdc_instance_id = $erdc_instance_id
+					and eid.erdc_parameter_id = $erdc_parameter_id
+					and sampletime > date_sub(now(),interval  ". $time_frame . " second)
+					order by sampletime";
+		} elseif ($data_type_id == 6) {
+		/*plui TBD
+			$sql = "select * 
+					from erdc_decimal_data eid
+					where eid.erdc_instance_id = $erdc_instance_id
+					and eid.erdc_parameter_id = $erdc_parameter_id
+					order by erdc_int_data_id DESC
+					";
+					*/
+		}	
+		else {
+			die('Invalid query');
 			}
 			
-		// Get results
-		$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-		while ($row = mysqli_fetch_assoc($result)) {
-			$sample_time = strtotime($row['sampletime'])-$offset;
-			if ($sample_time >= $from_time) {
-				$x = $sample_time * 1000;
-				$y = (float)$row['value'];
-				$metric = array($x, $y);
-				array_push($json, $metric);
-			   }
+		if ($dbType == "mysql"){
+			$result = mysqli_query($db, $sql);
+			// Check query
+			if (!$result) {
+				die('Invalid query: ' . mysqli_error());
+				}
+				
+			// Get results
+			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
+			while ($row = mysqli_fetch_assoc($result)) {
+				$sample_time = strtotime($row['sampletime'])-$offset;
+				if ($sample_time >= $from_time) {
+					$x = $sample_time * 1000;
+					$y = (float)$row['value'];
+					$metric = array($x, $y);
+					array_push($performanceData, $metric);
+				   }
+				}
+			
+			
+			// Get Element Name
+			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
+			//echo "Select display_name from entity where entity_id = $element_id\n";
+			$result = mysqli_query($db, $sql_element_name);
+			if (!$result) {
+				die('Invalid query: ' . mysqli_error());
 			}
-	
-		// Close the DB connection
-		$result->close();
-	}else{
-		$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-			}
-        
-		// Get results
-		$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-		while (odbc_fetch_row($result)) {
-			$sample_time = strtotime(odbc_result($result,"sampletime"))-$offset;
-			if ($sample_time >= $from_time) {
-				$x = $sample_time * 1000;
-				$y = (float)odbc_result($result,"value");
-				$metric = array($x, $y);
-				array_push($json, $metric);
-			   }
-			}
+			$row = mysqli_fetch_assoc($result);
+			$element_name = $row['display_name'];	
+			
+			// Close the DB connection
+			$result->close();
+		}else{
+			$result=odbc_exec($db,$sql);
+			// Check query
+			if (!$result) {
+				die('Invalid query: ' . odbc_errormsg());
+				}
+			
+			// Get results
+			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
+			while (odbc_fetch_row($result)) {
+				$sample_time = strtotime(odbc_result($result,"sampletime"))-$offset;
+				if ($sample_time >= $from_time) {
+					$x = $sample_time * 1000;
+					$y = (float)odbc_result($result,"value");
+					$metric = array($x, $y);
+					array_push($json, $metric);
+				   }
+				}
+		}
+		array_push($oneElement, $element_name);
+		array_push($oneElement, $performanceData);
+		array_push($json, $oneElement);
+		$oneElement = array();
+		$performanceData = array();
+		$i++;
+		
 	}
-	
     // Echo results as JSON
     echo json_encode($json);
     }
@@ -310,44 +386,47 @@ elseif ($query_type == "elements_for_performance") {
 
 // Get performance metrics
 elseif ($query_type == "performance") {
-    
-    if ($performance_monitor == "cpu") {
-        $sql = "Select ps.uptimehost_id, ps.sample_time, pa.cpu_usr, pa.cpu_sys , pa.cpu_wio
-                from performance_sample ps 
-                join performance_aggregate pa on pa.sample_id = ps.id
-                where ps.uptimehost_id = $element_id
-                order by ps.sample_time";
-    } elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
-              or $performance_monitor == "worst_disk_busy") {
-        $sql = "Select ps.uptimehost_id, ps.sample_time, pa.$performance_monitor as value
-                from performance_sample ps 
-                join performance_aggregate pa on pa.sample_id = ps.id
-                where ps.uptimehost_id = $element_id
-                order by ps.sample_time";
-    } elseif ($performance_monitor == "memory") {
-        $sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
-                from performance_sample ps
-                join performance_aggregate pa on pa.sample_id = ps.id
-                join entity_configuration ec on ec.entity_id = ps.uptimehost_id
-                where ps.uptimehost_id = $element_id
-                order by ps.sample_time";
-    } else {
-        die('Invalid query');
-        }
-     
-	if ($dbType == "mysql"){
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
+
+	foreach ($elementList as $element_id) {
+		if ($performance_monitor == "cpu") {
+			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.cpu_usr, pa.cpu_sys , pa.cpu_wio
+					from performance_sample ps 
+					join performance_aggregate pa on pa.sample_id = ps.id
+					where ps.uptimehost_id = $element_id					
+					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
+					order by ps.sample_time";
+					
+		} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
+				  or $performance_monitor == "worst_disk_busy") {
+			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.$performance_monitor as value
+					from performance_sample ps 
+					join performance_aggregate pa on pa.sample_id = ps.id
+					where ps.uptimehost_id = $element_id
+					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
+					order by ps.sample_time";
+		} elseif ($performance_monitor == "memory") {
+			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
+					from performance_sample ps
+					join performance_aggregate pa on pa.sample_id = ps.id
+					join entity_configuration ec on ec.entity_id = ps.uptimehost_id
+					where ps.uptimehost_id = $element_id
+					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
+					order by ps.sample_time";
+		} else {
+			die('Invalid query');
 			}
-		
-		$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;
-		
-		// Get results 
-		while ($row = mysqli_fetch_assoc($result)) {
-			$sample_time = strtotime($row['sample_time'])-$offset;
-			if ($sample_time >= $from_time) {
+     
+		if ($dbType == "mysql"){
+			$result = mysqli_query($db, $sql);
+			// Check query
+			if (!$result) {
+				die('Invalid query: ' . mysqli_error());
+				}
+			
+			
+			// Get results 
+			while ($row = mysqli_fetch_assoc($result)) {
+				$sample_time = strtotime($row['sample_time'])-$offset;
 				$x = $sample_time * 1000;
 				if ($performance_monitor == "cpu") {
 					$a = (float)$row['cpu_usr'];
@@ -364,45 +443,60 @@ elseif ($query_type == "performance") {
 					$y = (float)$row["$value"];
 					}
 				$metric = array($x, $y);
-				array_push($json, $metric);
+				array_push($performanceData, $metric);
 				}
+			
+			// Get Element Name
+			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
+			$result = mysqli_query($db, $sql_element_name);
+			if (!$result) {
+				die('Invalid query: ' . mysqli_error());
 			}
-	
-		// Close the DB connection
-		$result->close();
-	}else{
-		$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-			}
-		
-		$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;
-		
-		// Get results 
-		while (odbc_fetch_row($result)) {
-			$sample_time = strtotime(odbc_result($result,"sample_time"))-$offset;
-			if ($sample_time >= $from_time) {
-				$x = $sample_time * 1000;
-				if ($performance_monitor == "cpu") {
-					$a = (float)odbc_result($result,"cpu_usr");
-					$b = (float)odbc_result($result,"cpu_sys");
-					$c = (float)odbc_result($result,"cpu_wio");
-					$y = ($a + $b + $c);
-				} elseif ($performance_monitor == "memory") {
-					$total_ram = (float)odbc_result($result,"memsize");
-					$free_ram = (float)odbc_result($result,"free_mem");
-					$used_ram = $total_ram - $free_ram;
-					$y = round(($used_ram / $total_ram * 100), 1);
-				} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
-							or $performance_monitor == "worst_disk_busy") {
-					$y = (float)odbc_result($result,"value");
+			$row = mysqli_fetch_assoc($result);
+			$element_name = $row['display_name'];			
+			
+			// Close the DB connection
+			$result->close();
+		}else{
+			$result=odbc_exec($db,$sql);
+			// Check query
+			if (!$result) {
+				die('Invalid query: ' . odbc_errormsg());
+				}
+			
+			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;
+			
+			// Get results 
+			while (odbc_fetch_row($result)) {
+				$sample_time = strtotime(odbc_result($result,"sample_time"))-$offset;
+				if ($sample_time >= $from_time) {
+					$x = $sample_time * 1000;
+					if ($performance_monitor == "cpu") {
+						$a = (float)odbc_result($result,"cpu_usr");
+						$b = (float)odbc_result($result,"cpu_sys");
+						$c = (float)odbc_result($result,"cpu_wio");
+						$y = ($a + $b + $c);
+					} elseif ($performance_monitor == "memory") {
+						$total_ram = (float)odbc_result($result,"memsize");
+						$free_ram = (float)odbc_result($result,"free_mem");
+						$used_ram = $total_ram - $free_ram;
+						$y = round(($used_ram / $total_ram * 100), 1);
+					} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
+								or $performance_monitor == "worst_disk_busy") {
+						$y = (float)odbc_result($result,"value");
+						}
+					$metric = array($x, $y);
+					array_push($performanceData, $metric);
 					}
-				$metric = array($x, $y);
-				array_push($json, $metric);
 				}
-			}
-    }
+		}
+		array_push($oneElement, $element_name);
+		array_push($oneElement, $performanceData);
+		//print_r($performanceData);
+		array_push($json, $oneElement);
+		$oneElement = array();
+		$performanceData = array();
+	}
     // Echo results as JSON
     echo json_encode($json);
     }
