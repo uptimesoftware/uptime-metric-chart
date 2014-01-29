@@ -93,9 +93,11 @@
 				$("#options-div").hide();
 			}
 			$("#performance-div").hide();
+			$("#network-div").hide();
 			$("#service-monitor-div").show();
 			$("select.service-monitor-metrics").chosen();
 			$("select.service-monitor-elements").chosen();
+			$("select.service-monitor-ranged").chosen();
 			
 			requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=monitors';
 			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
@@ -124,6 +126,7 @@
 				$("#options-div").hide();
 			}
 			$("#service-monitor-div").hide();
+			$("#network-div").hide();
 			$("#performance-div").show();
 			$("select.performance-metrics").chosen();
 			$("select.performance-elements").chosen();
@@ -143,6 +146,43 @@
 				$("select.performance-metrics").trigger("chosen:updated").trigger('change');
 			}
 		}
+		
+
+		else if ($('#network-metrics-btn').is(':checked')) {
+			if (settings.metricType !== 'network'){
+				$("#options-div").hide();
+			}
+			$("#service-monitor-div").hide();
+			$("#performance-div").hide();
+			$("#network-div").show();
+			$("select.network-metrics").chosen();
+			$("select.network-elements").chosen();
+			$("select.network-ports").chosen();
+
+			$("select.network-metrics").empty();
+			$("select.network-metrics").append('<option value="kbps_total_rate">Total Rate (Mbps)</option>');
+			$("select.network-metrics").append('<option value="usage_percent">Usage (%)</option>');
+			$("select.network-metrics").append('<option value="kbps_in_rate">In Rate (Mbps)</option>');
+			$("select.network-metrics").append('<option value="usage_in_percent">In Usage (%)</option>');
+			$("select.network-metrics").append('<option value="kbps_out_rate">Out Rate (Mbps)</option>');
+			$("select.network-metrics").append('<option value="usage_out_percent">Out Usage (%)</option>');
+			$("select.network-metrics").append('<option value="errors_total_rate">Errors (#/sec)</option>');
+			$("select.network-metrics").append('<option value="errors_in_rate">In Errors (#/sec)</option>');
+			$("select.network-metrics").append('<option value="errors_out_rate">Out Errors (#/sec)</option>');
+			$("select.network-metrics").append('<option value="discards_total_rate">Discards (#/sec)</option>');
+			$("select.network-metrics").append('<option value="discards_in_rate">In Discards (#/sec)</option>');
+			$("select.network-metrics").append('<option value="discards_out_rate">Out Discards (#/sec)</option>');
+			
+			if (typeof metricValue !== 'undefined' && metricType == 'network') {
+				if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting network monitor metric droptown to: '
+							    + metricValue)};
+				$("select.network-metrics").val(metricValue).trigger("chosen:updated").trigger('change');			
+				$("select.network-ports").val(portValue).trigger("chosen:updated").trigger('change');			
+			} else {
+				$("select.network-metrics").trigger("chosen:updated").trigger('change');
+			}
+		}
+		
 	});
 	
 	// Service monitor metric changed
@@ -172,17 +212,29 @@
 		}).always(function() {
 			// console.log('Request completed.');
 		});
+	});	
+
+	// Service monitor element changed
+	$("select.service-monitor-elements").on('change', function(evt, params) {
+		launchDivs();
 	});
 	
 	//plui
-	// Service monitor metric changed
-	/*
+	// Ranged metric changed
 	$("select.service-monitor-elements").on('change', function(evt, params) {
-	
+		
+		if ($("select.service-monitor-metrics").val().slice(-1) == "6") {
+			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Ranged Data Selected')};
+			$("#service-monitor-ranged-div").show();
+		} else {
+			$("#service-monitor-ranged-div").hide();
+		}		
+		
 		$("select.service-monitor-ranged").empty();
 		$("select.service-monitor-ranged").trigger("chosen:updated");
-		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=ranged_instances&element='
-						+ $("select.service-monitor-elements").val();
+		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=ranged_objects&element='
+						+ $("select.service-monitor-elements").val() 
+						+ '&object_list=' + $("select.service-monitor-ranged").val();
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 		$.getJSON(requestString, function(data) {
 		}).done(function(data) {
@@ -191,10 +243,10 @@
 			$.each(data, function(key, val) {
 				$("select.service-monitor-ranged").append('<option value="' + key + '">' + val + '</option>');
 			});
-			if (typeof elementValue !== 'undefined' && metricType == 'servicemonitor') {
-				if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting service monitor element droptown to: '
-							    + elementValue)};
-				$("select.service-monitor-ranged").val(elementValue).trigger("chosen:updated").trigger('change');
+			if (typeof objectValue !== 'undefined' && metricType == 'servicemonitor') {
+				if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting service monitor ranged object droptown to: '
+							    + objectValue)};
+				$("select.service-monitor-ranged").val(objectValue).trigger("chosen:updated").trigger('change');
 			} else {
 				$("select.service-monitor-ranged").trigger("chosen:updated").trigger('change');
 			}
@@ -205,13 +257,9 @@
 			// console.log('Request completed.');
 		});
 	});
-	*/
 	
 	
-	// Service monitor element changed
-	$("select.service-monitor-elements").on('change', function(evt, params) {
-		launchDivs();
-	});
+	
 	
 	// Performance metric changed
 	$("select.performance-metrics").on('change', function(evt, params) {
@@ -244,6 +292,87 @@
 	$("select.performance-elements").on('change', function(evt, params) {
 		launchDivs();
 	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Network metric changed
+	$("select.network-metrics").on('change', function(evt, params) {
+		$("select.network-elements").empty();
+		$("select.network-elements").trigger("chosen:updated");
+		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=listNetworkDevice';
+		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
+		$.getJSON(requestString, function(data) {}).done(function(data) {
+			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Request succeeded!')};
+			$("select.network-elements").empty();
+			$.each(data, function(key, val) {
+				$("select.network-elements").append('<option value="' + key + '">' + val + '</option>');	
+			});
+			if (typeof elementValue !== 'undefined' && metricType == 'network') {
+				if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting network element droptown to: '
+							    + elementValue)};
+				$("select.network-elements").val(elementValue).trigger("chosen:updated").trigger('change');
+			} else {
+				$("select.network-elements").trigger("chosen:updated").trigger('change');
+			}
+			$("#network-element-count").text($('#network-elements option').size());
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			console.log('Gadget #' + gadgetInstanceId + ' - Request failed! ' + textStatus);
+		}).always(function() {
+			// console.log('Request completed.');
+		});	
+	});
+	
+	// Network element changed
+	$("select.network-elements").on('change', function(evt, params) {
+		$("select.network-ports").empty();
+		$("select.network-ports").trigger("chosen:updated");		
+		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=devicePort'
+						+ '&element=' + $("select.network-elements").val();
+		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
+		$.getJSON(requestString, function(data) {}).done(function(data) {
+			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Request succeeded!')};
+			$("select.network-ports").empty();
+			$.each(data, function(key, val) {
+				$("select.network-ports").append('<option value="' + key + '">' + val + '</option>');	
+			});
+			if (typeof portValue !== 'undefined' && metricType == 'network') {
+				if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting network port droptown to: '
+							    + portValue)};
+				$("select.network-ports").val(portValue).trigger("chosen:updated").trigger('change');
+			} else {
+				$("select.network-ports").trigger("chosen:updated").trigger('change');
+			}
+			$("#network-ports-count").text($('#network-ports option').size());
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			console.log('Gadget #' + gadgetInstanceId + ' - Request failed! ' + textStatus);
+		}).always(function() {
+			// console.log('Request completed.');
+		});	
+	});
+
+	
+	// Network port(s) changed
+	$("select.network-ports").on('change', function(evt, params) {
+		launchDivs();
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// Key functions
 	function populateDropdowns() {
@@ -280,6 +409,9 @@
 			settings.metricType = 'servicemonitor';
 			settings.metricValue = $("select.service-monitor-metrics").val();
 			settings.elementValue = $("select.service-monitor-elements").val();
+			if ($("select.service-monitor-metrics").val().slice(-1) == "6") {
+				settings.objectValue = $("select.service-monitor-ranged").val();
+			}
 			if ($("#chart-title-btn").hasClass('active')) {
 				settings.chartTitle = $('select.service-monitor-metrics option:selected').text();
 				/*settings.chartTitle = $('select.service-monitor-metrics option:selected').text() + ' for '
@@ -304,6 +436,21 @@
 			}
 			settings.seriesTitle = $('select.performance-metrics option:selected').text();
 		}
+		else if ($("#network-metrics-radio").hasClass('active')) {
+			settings.metricType = 'network';
+			settings.metricValue = $("select.network-metrics").val();
+			settings.elementValue = $("select.network-elements").val();
+			settings.portValue = $("select.network-ports").val();
+			if ($("#chart-title-btn").hasClass('active')) {
+				settings.chartTitle = $('select.network-metrics option:selected').text() + ' for '
+							+ $('select.network-elements option:selected').text();
+							
+			} else {
+				settings.chartTitle = "";
+			}
+			settings.seriesTitle = $('select.network-metrics option:selected').text();
+		}
+		
 		
 		timeFrameIndex = $("#timeFrameSlider").slider("value");
 		settings.timeFrame = timeFrameSliderOptions[timeFrameIndex];
@@ -318,7 +465,7 @@
 			settings.chartType = checkedButton;
 		}
 		else {
-			settings.chartType = 'areaspline';
+			settings.chartType = 'spline';
 		}
 	
 		console.log('Gadget #' + gadgetInstanceId + ' - Saved settings: ' + printSettings(settings));
@@ -333,7 +480,9 @@
 		metricType = settings.metricType;
 		chartType = settings.chartType;
 		metricValue = settings.metricValue;
+		objectValue = settings.objectValue;
 		elementValue = settings.elementValue;
+		portValue = settings.portValue;
 		timeFrame = settings.timeFrame;
 		refreshInterval = settings.refreshInterval;
 		chartTitle = settings.chartTitle;
@@ -347,6 +496,11 @@
 			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting metric type to: '
 						    + metricType)};
 			$("#performance-metrics-btn").trigger('click');	
+		}
+		if (metricType == "network") {									
+			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting metric type to: '
+						    + metricType)};
+			$("#network-metrics-btn").trigger('click');	
 		}
 		if (chartTitle == "") {
 			$("#chart-title-btn").removeClass('active');
@@ -416,7 +570,8 @@
 	
 	function printSettings(settings) {
 		var printString = 'metricType: ' + settings.metricType + ', metricValue: ' + settings.metricValue
-				+ ', elementValue: ' + settings.elementValue + ', timeFrame: ' + settings.timeFrame
+				+ ', elementValue: ' + settings.elementValue + ', portValue: ' + settings.portValue
+				+ ', objectValue: ' + settings.objectValue + ', timeFrame: ' + settings.timeFrame
 				+ ', refreshInterval: ' + settings.refreshInterval + ', chartType: ' + settings.chartType
 				+ ', chartTitle: ' + settings.chartTitle + ', seriesTitle: ' + settings.seriesTitle;
 		return printString;
@@ -469,7 +624,9 @@
 			series: []};
 		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
 						+ '&monitor=' + settings.metricValue + '&element=' + settings.elementValue
-						+ '&time_frame=' + settings.timeFrame;
+						+ '&port=' + settings.portValue
+						+ '&object_list=' + settings.objectValue
+						+ '&time_frame=' + settings.timeFrame ;
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 
 		$.ajax({url: requestString,
@@ -495,7 +652,6 @@
 						name: value[0],
 						data: value[1]
 					});
-					console.log(value[1]);
 					//console.log('index = '+ index + ' value = ' + value[1]);
 					
 					options.title.text = settings.chartTitle;					
