@@ -47,6 +47,7 @@
 	});
 	uptimeGadget.registerOnResizeHandler(resizeGadget);
 	
+	
 	// Populate dropdowns
 	populateDropdowns();
 	
@@ -88,6 +89,14 @@
 	
 	// Metric type changed
 	$("#metric-type-radio").on('change', function(evt, params) {
+		$('div.container').css('overflowY', 'auto');
+		$("div.container").css('overflowX', 'hidden');
+//plui
+		$("div.container").css('height',document.documentElement.clientHeight);
+		//console.log('height is ' + $("div iframe").height());
+		console.log('height is ' + document.documentElement.clientHeight);
+		
+		
 		if ($('#service-monitor-metrics-btn').is(':checked')) {
 			if (settings.metricType !== 'servicemonitor'){
 				$("#options-div").hide();

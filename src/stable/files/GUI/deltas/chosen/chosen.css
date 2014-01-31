@@ -222,6 +222,8 @@
 .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
   margin: 1px 0;
   padding: 5px;
+  /*plui
+  height: 15px;*/
   height: auto;
   outline: 0;
   border: 0 !important;
@@ -428,3 +430,6 @@
   }
 }
 /* @end */
+
+.chzn-container .chzn-results {max-height: 45px; /* Customize to meet your needs */
+}
