@@ -17,14 +17,27 @@
 // Set the JSON header
 header("Content-type: text/json");
 
-$query_type = $_GET['query_type'];
-$offset = $_GET['uptime_offest'];
-$time_frame = $_GET['time_frame'];
-$service_monitor = explode("-", $_GET['monitor']);
-$erdc_parameter_id = $service_monitor[0];
-$data_type_id = $service_monitor[1];
-$performance_monitor = $_GET['monitor'];
-$elementList = explode(",", $_GET['element']);
+if (isset($_GET['query_type'])){
+	$query_type = $_GET['query_type'];
+}
+if (isset($_GET['uptime_offest'])){
+	$offset = $_GET['uptime_offest'];
+}
+if (isset($_GET['time_frame'])){
+	$time_frame = $_GET['time_frame'];
+}
+if (isset($_GET['monitor'])){
+	$service_monitor = explode("-", $_GET['monitor']);
+	$erdc_parameter_id = $service_monitor[0];
+	if ( count ($service_monitor) >= 1)
+	{
+		$data_type_id = $service_monitor[1];
+	}
+	$performance_monitor = $_GET['monitor'];
+}
+if (isset($_GET['element'])){
+	$elementList = explode(",", $_GET['element']);
+}
 //$element = explode("-", $_GET['element']);
 //plui
 //$element = explode("-", $elementList);
@@ -33,8 +46,12 @@ $element_id = $_GET['element'];
 $entity_id = $element[0];
 $erdc_instance_id = $element[1];
 */
-$ports = explode(",", $_GET['port']);
-$objectList = explode(",", $_GET['object_list']);
+if (isset($_GET['port'])){
+	$ports = explode(",", $_GET['port']);
+}
+if (isset($_GET['object_list'])){
+	$objectList = explode(",", $_GET['object_list']);
+}
 $json = array();
 $oneElement = array();
 $performanceData = array();
