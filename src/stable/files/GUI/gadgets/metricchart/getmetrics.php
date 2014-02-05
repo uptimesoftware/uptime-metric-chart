@@ -108,8 +108,22 @@ if ($dbType == "mysql"){
 		}
 	}
 elseif($dbType == "oracle"){
+	
 	// Oracle Connection details
-	$db = odbc_connect("Driver=/usr/lib/oracle/12.1/client64/lib/libsqora.so.12.1;dbq=".$dbHost.":".$dbPort."/".$dbName, $dbUsername, $dbPassword);
+
+	//Uncomment one of the odbc_connect calls on the line below.
+	//Make sure the Driver is either a Named ODBC Driver in {} braces (Typically Windows but possible on Linux as well),
+	//Or the raw path to location of the libsqora (Linux Only)
+	//see Readme provided with this plugin for more details, and general steps for setting up Oracle ODBC drivers on your up.time monitoring station.
+
+	// Example Linux ODBC Connection string for Oracle
+	// You may need to update the Driver path to match the location of your libsqora.so
+	//$db = odbc_connect("Driver=/usr/lib/oracle/12.1/client64/lib/libsqora.so.12.1;dbq=".$dbHost.":".$dbPort."/".$dbName, $dbUsername, $dbPassword);
+
+	// Example Windows ODBC Connection string for Oracle
+	// You may need to change the Driver to match the name of your Oracle ODBC  Driver according to 'ODBC Data Source Administrator'
+	//$db = odbc_connect("Driver={Oracle in OraClient12Home1};dbq=".$dbHost.":".$dbPort."/".$dbName, $dbUsername, $dbPassword);
+
 	if (!$db){
 		//printf("Connection Failed: %s</br>" odbc_errormsg());
 		exit();
