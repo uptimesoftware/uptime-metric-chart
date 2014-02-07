@@ -81,7 +81,10 @@ ie. instantclient-basic-windows.x64-12.1.0.1.0.zip
 
 5. Run the 'Data Sources (ODBC)' utility from the Windows 'Administrative Tools'. Click on the 'Drivers' tab, and confirm that you have an 'Oracle in instantclient' driver listed, and note the name of the driver, as this is required as the 'ODBC Driver Name' when setting up the service monitor. (Likely it will be 'Oracle in instantclient_12_1' or 'Oracle in OraClient12Home1').
 
-6. Make sure to uncomment one of the odbc_connect lines in <uptime_dir>/GUI/gadgets/metricchart/getmetrics.php as explained above.
+6. Update the Path Environment Variable to include the path to the oracle driver. Append ";C:\Oracle\instantclient_12_1" to end of the variable.
+To set this variable Go to System Properties > Advanced > Environment Variables > Under System variables find Path and edit it.
 
-If your having trouble with installing just the Oracle InstantClient & ODBC , another option is to install these drivers as part of the 'Oracle Data Access Components' which is a bundle of Oracle drivers full fleged installer compared to the zips mentioned above. This bundle can be found on the Oracle website here: http://www.oracle.com/technetwork/database/windows/downloads/index.html
+7. Make sure to uncomment one of the odbc_connect lines in <uptime_dir>/GUI/gadgets/metricchart/getmetrics.php as explained above.
+
+If your having trouble with installing just the Oracle InstantClient & ODBC the likely issue is you are missing "Microsoft Visual C++ 2010 SP1 Redistributable Package (x64)" package that has the DLL that this driver needs, another option is to install these drivers as part of the 'Oracle Data Access Components' which is a bundle of Oracle drivers full fleged installer compared to the zips mentioned above. This bundle can be found on the Oracle website here: http://www.oracle.com/technetwork/database/windows/downloads/index.html
 
