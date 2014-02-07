@@ -1,5 +1,4 @@
-
-Metric Chart v2.0
+Metric Chart v2.5
 ------------------
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to house your new graphs.
 
@@ -17,6 +16,7 @@ Features:
 * Tell us which features you would like to see in a future release!
 
 Updates:
+v2.5 - Now able to display metrics from multiple elements on the same graph. Along with expanded support for Network Device Metrics & additional types of Retained Metrics.
 v2.0 - Supports Oracle backend as well the times should now be displayed in the client timezone rather then UTC.
 
 
@@ -88,3 +88,17 @@ To set this variable Go to System Properties > Advanced > Environment Variables 
 
 If your having trouble with installing just the Oracle InstantClient & ODBC the likely issue is you are missing "Microsoft Visual C++ 2010 SP1 Redistributable Package (x64)" package that has the DLL that this driver needs, another option is to install these drivers as part of the 'Oracle Data Access Components' which is a bundle of Oracle drivers full fleged installer compared to the zips mentioned above. This bundle can be found on the Oracle website here: http://www.oracle.com/technetwork/database/windows/downloads/index.html
 
+
+Upgrading from an earlier version of the Metric Chart
+-----------------------------------------------------
+* Install the newest version of the .upk via the regular plugin manager process.
+
+* Navigate to the Up.time Dashboards where your metric chart gadget is located.
+
+* Delete the existing gadgets using the Small Gear Icon
+
+* Clear the Cache in your browser to ensure you don't have earlier versions of the php & javascript cached.
+
+* Add a new Gadget and click on 'Refresh Gadgets' button to find the new version of the Metric Chart
+
+* Choose your metrics & graph! 
