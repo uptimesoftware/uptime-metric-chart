@@ -14,7 +14,7 @@ The new version of the Metric Chart now allows you to graph metrics for multiple
       Metric Chart v1.0 | X   |     |     |     |     |     |     |     |
 
 ###Known Limitations
-By default, Metric Chart currently expects a standard Monitoring Station configuration, with the bundled MySQL database on either Windows or Linux.  However, it also supports Oracle Datastores via ODBC Drivers see the [readme for Oracle ODBC Driver Install Steps & Additional Details] (blob/master/src/stable/readme.txt)
+By default, Metric Chart currently expects a standard Monitoring Station configuration, with the bundled MySQL database on either Windows or Linux.  However, it also supports Oracle Datastores via ODBC Drivers see the [readme for Oracle ODBC Driver Install Steps & Additional Details] (../blob/master/src/stable/readme.txt)
 
 ###Upgrading from an earlier version of the Metric Chart
 * Install the newest version of the .upk via the regular plugin manager process.
