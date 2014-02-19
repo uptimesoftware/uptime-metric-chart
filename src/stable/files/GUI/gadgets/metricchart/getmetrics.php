@@ -389,18 +389,6 @@ elseif ($query_type == "servicemonitor") {
 				$element_name = $row['display_name'];	
 				
 				
-				// For ranged data, use the object name & element name in the series legend
-				if ($data_type_id == 6) {
-					$sql_element_name = "select object_name from ranged_object ro where ro.id = $element_id";
-					//echo "Select display_name from entity where entity_id = $element_id\n";
-					$result = mysqli_query($db, $sql_element_name);
-					if (!$result) {
-						die('Invalid query: ' . mysqli_error());
-					}
-					$row = mysqli_fetch_assoc($result);
-					$element_name = $row['display_name'];
-				}
-				
 				// Close the DB connection
 				$result->close();
 			}
@@ -434,30 +422,17 @@ elseif ($query_type == "servicemonitor") {
 				}
 				$row = mysqli_fetch_assoc($result);
 				$element_name = odbc_result($result,'display_name');	
-				
-				
-				// For ranged data, use the object name & element name in the series legend
-				if ($data_type_id == 6) {
-					$sql_element_name = "select object_name from ranged_object ro where ro.id = $element_id";
-					//echo "Select display_name from entity where entity_id = $element_id\n";
-					$result = odbc_exec($db, $sql_element_name);
-					if (!$result) {
-						die('Invalid query: ' . odbc_errormsg());
-					}
-					$row = odbc_fetch_row($result);
-					$element_name = odbc_result($result,'display_name');
-			}
 
-
-
-			array_push($oneElement, $element_name);
-			array_push($oneElement, $performanceData);
-			array_push($json, $oneElement);
-			$oneElement = array();
-			$performanceData = array();
-			$i++;
-			
 		}
+
+		array_push($oneElement, $element_name);
+		array_push($oneElement, $performanceData);
+		array_push($json, $oneElement);
+		$oneElement = array();
+		$performanceData = array();
+		$i++;
+			
+		
 	}
 }elseif ($data_type_id == 6) {
 		
