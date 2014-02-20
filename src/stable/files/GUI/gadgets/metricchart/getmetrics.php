@@ -54,7 +54,7 @@ $UPTIME_CONF="../../../uptime.conf";
 
 // Gets uptime configuration for the database.
 if (file_exists($UPTIME_CONF)) {
-		$handle = fopen($UPTIME_CONF,"r+") or die("Can't open uptime.conf");
+		$handle = fopen($UPTIME_CONF,"r") or die("Can't open uptime.conf");
 		if ($handle) {
 				while (!feof($handle)) // Loop til end of file.
 				{
@@ -541,11 +541,11 @@ elseif ($query_type == "servicemonitor") {
 										join erdc_instance ei on ei.entity_id = e.entity_id
 										where erdc_instance_id = $erdc_instance_id";
 				
-				$result = mysqli_query($db, $sql_element_name);
+				$result = odbc_exec($db, $sql_element_name);
 				if (!$result) {
 					die('Invalid query: ' . mysqli_error());
 				}
-				$row = mysqli_fetch_assoc($result);
+				$row = odbc_fetch_row($result);
 				$element_name = odbc_result($result,'display_name');
 				
 				// For ranged data, use the object name & element name in the series legend
@@ -555,12 +555,10 @@ elseif ($query_type == "servicemonitor") {
 				if (!$result) {
 					die('Invalid query: ' . mysqli_error());
 				}
-				odbc_fetch_row($result);
+				$row = odbc_fetch_row($result);
 				$element_name = odbc_result($result,'object_name') . " - " . $element_name;
 				
-				// Close the DB connection
-				$result->close();
-
+			
 
 
 
