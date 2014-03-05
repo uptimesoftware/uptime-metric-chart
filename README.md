@@ -9,6 +9,7 @@ The new version of the Metric Chart now allows you to graph metrics for multiple
 ###Version Compatibility
                         | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
     --------------------|-----|-----|-----|-----|-----|-----|-----|-----|
+	  Metric Chart v2.6 | X   |     |     |     |     |     |     |     | 
       Metric Chart v2.5 | X   |     |     |     |     |     |     |     |    
       Metric Chart v2.0 | X   |     |     |     |     |     |     |     |
       Metric Chart v1.0 | X   |     |     |     |     |     |     |     |
@@ -19,18 +20,10 @@ By default, Metric Chart currently expects a standard Monitoring Station configu
 ###Upgrading from an earlier version of the Metric Chart
 * Install the newest version of the .upk via the regular plugin manager process.
 * Navigate to the Up.time Dashboards where your metric chart gadget is located. 
-* Delete the existing gadgets using the Small Gear Icon
-* Clear the Cache in your browser to ensure you don't have earlier versions of the php & javascript cached.
 * Add a new Gadget and click on 'Refresh Gadgets' button to find the new version of the Metric Chart
 * Choose your metrics & graph! 
 
 
-###Candidate Features
-* Trend lines
-* Additional chart types (bar, pie, guage)
-* Expand time span options
-* Zooming
-* _Your enhancement requests!_
 
 ###Advanced Instructions
 * Open the configuration dialog by double-clicking on the chart

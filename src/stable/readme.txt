@@ -1,4 +1,4 @@
-Metric Chart v2.5
+Metric Chart v2.6
 ------------------
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to house your new graphs.
 
@@ -16,6 +16,7 @@ Features:
 * Tell us which features you would like to see in a future release!
 
 Updates:
+v2.6 - Simplified the gadgets dependencies to improve the initial install process.
 v2.5 - Now able to display metrics from multiple elements on the same graph. Along with expanded support for Network Device Metrics & additional types of Retained Metrics.
 v2.0 - Supports Oracle backend as well the times should now be displayed in the client timezone rather then UTC.
 
@@ -43,7 +44,7 @@ Additional Oracle Install Steps:
 --------------------------------
 In order to use this gadget with an Oracle datastore, you will need to install the Oracle Instant Client & ODBC Drivers on your up.time monitoring.
 The process for this varies for Windows & Linux. Once the appropriate ODBC Driver has been installed, you will need to edit the new getmetrics.php page on your 
-monitoring station ( <uptime_dir>/GUI/gadgets/metricchart/getmetrics.php ) and uncomment one of the odbc_connect strings in the 'Oracle Connection details' section of the script(Near lines 112 to 125). 
+monitoring station ( <uptime_dir>/gadgets/definitions/uptime.MetricChart/getmetrics.php this file may not exist until you've 'refreshed gadgets via the GUI') and uncomment one of the odbc_connect strings in the 'Oracle Connection details' section of the script(Near lines 112 to 125). 
 
 Oracle ODBC Driver Linux Install Steps:
 --------------------
@@ -94,10 +95,6 @@ Upgrading from an earlier version of the Metric Chart
 * Install the newest version of the .upk via the regular plugin manager process.
 
 * Navigate to the Up.time Dashboards where your metric chart gadget is located.
-
-* Delete the existing gadgets using the Small Gear Icon
-
-* Clear the Cache in your browser to ensure you don't have earlier versions of the php & javascript cached.
 
 * Add a new Gadget and click on 'Refresh Gadgets' button to find the new version of the Metric Chart
 
