@@ -11,11 +11,9 @@
 	var settings = {metricType: null, metricValue: null, elementValue: null,
 			timeFrame: null, refreshInterval: null, chartType: null,
 			chartTitle: null, seriesTitle: null};
-	var gadgetInstanceId = uptimeGadget.getInstanceId();	
-	var gadgetGetMetricsPath = '/gadgets/instances/' + gadgetInstanceId + '/getmetrics.php';
-	var normalGetMetricsPath = 'getmetrics.php';
-	var relativeGetMetricsPath = '/gadgets/metricchart/getmetrics.php';
-	var getMetricsPath = relativeGetMetricsPath;
+	var gadgetInstanceId = uptimeGadget.getInstanceId();
+	var currentURL = $("script#ownScript").attr("src");	
+	var getMetricsPath = currentURL.substr(0,$("script#ownScript").attr("src").lastIndexOf("/")+1) + 'getmetrics.php';
 	var timeFrameOptions = {"3600" : "hour", "21600" : "6 hours",
 				"43200" : "12 hours", "86400" : "day",
 				"172800" : "2 days", "604800" : "week",
@@ -91,10 +89,9 @@
 	$("#metric-type-radio").on('change', function(evt, params) {
 		$('div.container').css('overflowY', 'auto');
 		$("div.container").css('overflowX', 'hidden');
-//plui
 		$("div.container").css('height',document.documentElement.clientHeight);
-		//console.log('height is ' + $("div iframe").height());
-		console.log('height is ' + document.documentElement.clientHeight);
+
+		
 		
 		
 		if ($('#service-monitor-metrics-btn').is(':checked')) {
