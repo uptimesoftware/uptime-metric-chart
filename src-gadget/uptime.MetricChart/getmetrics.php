@@ -939,7 +939,7 @@ elseif ($query_type == "network") {
 
 			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
 			while (odbc_fetch_row($result)) {
-				$sample_time = strtotime($row['sample_time'])-$offset;
+				$sample_time = strtotime(odbc_result($result, 'sample_time'))-$offset;
 				$x = $sample_time * 1000;
 				if(preg_match("/kbps/",$performance_monitor)) {
 					$y = (float) odbc_result($result, "$performance_monitor") / 1024;
