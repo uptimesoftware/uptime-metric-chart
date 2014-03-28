@@ -236,7 +236,8 @@ elseif ($query_type == "servicemonitor") {
 			
 		
 	}
-}elseif ($data_type_id == 6) {
+}
+	elseif ($data_type_id == 6) {
 		
 		foreach($objectList as $single_ranged_object) {
 			
@@ -316,6 +317,7 @@ elseif ($query_type == "servicemonitor") {
 			$i++;
 			
 		
+		}
 	}
     // Echo results as JSON
     echo json_encode($json);
@@ -347,6 +349,8 @@ elseif ($query_type == "elements_for_performance") {
 elseif ($query_type == "performance") {
 
 	foreach ($elementList as $element_id) {
+
+
 		if ($performance_monitor == "cpu") {
 			if ($db->dbType == "mysql") {
 			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.cpu_usr, pa.cpu_sys , pa.cpu_wio
@@ -367,8 +371,7 @@ elseif ($query_type == "performance") {
 			}
 					
 		}
-		elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage" or $performance_monitor == "worst_disk_busy")
-		{
+		elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage" or $performance_monitor == "worst_disk_busy"){
 			if ($db->dbType == "mysql") {
 			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.$performance_monitor as value
 					from performance_sample ps 
@@ -410,9 +413,10 @@ elseif ($query_type == "performance") {
 
 			}
 
-		} else {
+		}
+		else {
 			die('Invalid query');
-			}
+		}
      
 			$result = $db->execQuery($sql);
 
@@ -431,19 +435,19 @@ elseif ($query_type == "performance") {
 					$y = round(($used_ram / $total_ram * 100), 1);
 				} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
 							or $performance_monitor == "worst_disk_busy") {
-					$y = (float)$row["$value"];
+					$y = (float)$row["$VALUE"];
 					}
 				$metric = array($x, $y);
 				array_push($performanceData, $metric);
 				}
 			
-			// Get Element Name
-			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-			$result = $db->execQuery($sql);
-			$row = $result[0];
-			$element_name = $row['DISPLAY_NAME'];			
-			
-		}
+		// Get Element Name
+		$sql_element_name = "Select display_name from entity where entity_id = $element_id";
+		$result = $db->execQuery($sql);
+		$row = $result[0];
+		$element_name = $row['DISPLAY_NAME'];			
+		
+		
 		
 		array_push($oneElement, $element_name);
 		array_push($oneElement, $performanceData);
