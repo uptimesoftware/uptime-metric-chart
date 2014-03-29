@@ -435,7 +435,7 @@ elseif ($query_type == "performance") {
 					$y = round(($used_ram / $total_ram * 100), 1);
 				} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
 							or $performance_monitor == "worst_disk_busy") {
-					$y = (float)$row["$VALUE"];
+								$y = (float)$row['VALUE'];
 					}
 				$metric = array($x, $y);
 				array_push($performanceData, $metric);
