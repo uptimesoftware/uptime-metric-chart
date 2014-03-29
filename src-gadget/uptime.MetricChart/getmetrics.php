@@ -222,7 +222,7 @@ elseif ($query_type == "servicemonitor") {
 				
 				// Get Element Name
 				$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-				$result = $db->execQuery($sql);
+				$result = $db->execQuery($sql_element_name);
 				$row = $result[0];
 				$element_name = $row['DISPLAY_NAME'];	
 				
@@ -296,14 +296,14 @@ elseif ($query_type == "servicemonitor") {
 										join erdc_instance ei on ei.entity_id = e.entity_id
 										where erdc_instance_id = $erdc_instance_id";
 				
-				$result = $db->execQuery($sql);
+				$result = $db->execQuery($sql_element_name);
 				$row = $result[0];
 				$element_name = $row['DISPLAY_NAME'];
 				
 				// For ranged data, use the object name & element name in the series legend
 				$sql_object_name = "select object_name from ranged_object ro where ro.id = $ranged_object_id";
 
-				$result = $db->execQuery($sql);
+				$result = $db->execQuery($sql_object_name);
 				$row = $result[0];
 				$element_name = $row['object_name'] . " - " . $element_name;
 				
@@ -443,7 +443,7 @@ elseif ($query_type == "performance") {
 			
 		// Get Element Name
 		$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-		$result = $db->execQuery($sql);
+		$result = $db->execQuery($sql_element_name);
 		$row = $result[0];
 		$element_name = $row['DISPLAY_NAME'];			
 		
@@ -540,7 +540,7 @@ elseif ($query_type == "network") {
 			$sql_port_name = "Select if_name from net_device_port_config 
 								where entity_id = $elementList[0] 
 								and if_index = $singlePort";
-			$result = $db->execQuery($sql);
+			$result = $db->execQuery($sql_port_name);
 			$row = $result[0];
 			$port_name = $row['IF_NAME'];
 			
