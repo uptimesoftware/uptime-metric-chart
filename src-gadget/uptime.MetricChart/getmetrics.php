@@ -17,6 +17,8 @@
 // Set the JSON header
 header("Content-type: text/json");
 
+include("uptimeDB.php");
+
 if (isset($_GET['query_type'])){
 	$query_type = $_GET['query_type'];
 }
@@ -50,92 +52,17 @@ $json = array();
 $oneElement = array();
 $performanceData = array();
 //date_default_timezone_set('UTC');
-$uptime_dir = substr(getenv("MIBDIRS"), 0, -4 );
-$UPTIME_CONF = $uptime_dir . "uptime.conf";
 
-// Gets uptime configuration for the database.
-if (file_exists($UPTIME_CONF)) {
-		$handle = fopen($UPTIME_CONF,"r") or die("Can't open uptime.conf");
-		if ($handle) {
-				while (!feof($handle)) // Loop til end of file.
-				{
-						$buffer = fgets($handle, 4096); // Read a line.
-						if (preg_match("/^dbType.*/", $buffer)) // Check for string.
-						{
-								$data = preg_split("/^dbType=/", $buffer);
-								$dbType = rtrim($data[1]);
-						}
-						if (preg_match("/^dbHostname.*/", $buffer)) // Check for string.
-						{
-								$data = preg_split("/^dbHostname=/", $buffer);
-								$dbHost = rtrim($data[1]);
-						}
-						if (preg_match("/^dbPort.*/", $buffer)) // Check for string.
-						{
-								$data = preg_split("/^dbPort=/", $buffer);
-								$dbPort = rtrim($data[1]);
-						}
-						if (preg_match("/^dbName.*/", $buffer)) // Check for string.
-						{
-								$data = preg_split("/^dbName=/", $buffer);
-								$dbName = rtrim($data[1]);
-						}
-						if (preg_match("/^dbUsername.*/", $buffer)) // Check for string.
-						{
-								$data = preg_split("/^dbUsername=/", $buffer);
-								$dbUsername = rtrim($data[1]);
-						}
-						if (preg_match("/^dbPassword.*/", $buffer)) // Check for string.
-						{
-								$data = preg_split("/^dbPassword=/", $buffer);
-								$dbPassword = rtrim($data[1]);
-						}
-				}
-				fclose($handle); // Close the file.
-		}
-} else {
-		echo "$UPTIME_CONF does not exist.  Please enter appropriate path to uptime.conf";
-		exit(2);
+$db = new uptimeDB;
+if ($db->connectDB())
+{
+	echo "";
+
 }
-
-
-if ($dbType == "mysql"){
-	// mysql connection details
-	$db = mysqli_connect($dbHost.":".$dbPort, $dbName, $dbUsername, $dbPassword);
-	//Check connection
-	if (mysqli_connect_errno()) {
-		printf("Connection failed: %s</br>", mysqli_connect_error());
-		exit();
-		}
-	}
-elseif($dbType == "oracle"){
-	
-	// Oracle Connection details
-
-	//Uncomment one of the odbc_connect calls on the line below.
-	//Make sure the Driver is either a Named ODBC Driver in {} braces (Typically Windows but possible on Linux as well),
-	//Or the raw path to location of the libsqora (Linux Only)
-	//see Readme provided with this plugin for more details, and general steps for setting up Oracle ODBC drivers on your up.time monitoring station.
-
-	// Example Linux ODBC Connection string for Oracle
-	// You may need to update the Driver path to match the location of your libsqora.so
-	//$db = odbc_connect("Driver=/usr/lib/oracle/12.1/client64/lib/libsqora.so.12.1;dbq=".$dbHost.":".$dbPort."/".$dbName, $dbUsername, $dbPassword);
-
-	// Example Windows ODBC Connection string for Oracle
-	// You may need to change the Driver to match the name of your Oracle ODBC  Driver according to 'ODBC Data Source Administrator'
-	//$db = odbc_connect("Driver={Oracle in OraClient12Home1};dbq=".$dbHost.":".$dbPort."/".$dbName, $dbUsername, $dbPassword);
-
-	if (!$db){
-		//printf("Connection Failed: %s</br>" odbc_errormsg());
-		exit();
-		}
-	}
-elseif($dbType == "mssql"){
-	// MSSQL connection parameters
-	// Still to be done note if use odbc drivers can connect with odbc_connect like oracle then will use the same queries and result set so no need to make any other changes then to this section.
-}
-else{
-	die('Bad database type');
+else
+{
+ echo "unable to connect to DB exiting";	
+ exit(1);
 }
 
 // Enumerate monitors  	
@@ -149,59 +76,28 @@ if ($query_type == "monitors") {
             where ei.entity_id is not null
             order by name, description;
             ";
-			
-	if ($dbType == "mysql"){		
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
-			}
-		// Get results
-		while ($row = mysqli_fetch_assoc($result)) {
-			$my_data_type_id = $row['data_type_id'];
+
+	$result = $db->execQuery($sql);
+	foreach ($result as $row) {
+
+			$my_data_type_id = $row['DATA_TYPE_ID'];
 		    if ($my_data_type_id == 2 or $my_data_type_id == 3 or $my_data_type_id == 6) {				
-				if ($row['units'] == "") {
-					$json[$row['erdc_param'] . "-" . $row['data_type_id']] =
-					$row['name'] . " - " . $row['short_desc']
-					;
+				if ($row['UNITS'] == "") {
+					$k = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'];
+					$v = $row['NAME'] . " - " . $row['SHORT_DESC'];
+					$json[$k] = $v;
+
 				} else {
-					$json[$row['erdc_param'] . "-" . $row['data_type_id']] =
-					$row['name'] . " - " . $row['short_desc']
-					. " (" . $row['units'] . ")"
-					;
+					$k = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'] ;
+					$v = $row['NAME'] . " - " . $row['SHORT_DESC'] . " (" . $row['UNITS'] . ")";
+					$json[$k] = $v;
 				}
 			}
-        }
-		// Close the DB connection
-		$result->close();
-	}
-	elseif ($dbType == "oracle"){
-		$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-			}
-		// Get results
-		while (odbc_fetch_row($result)) {
-			//Currently only show integer, decimal and ranged-type data
-			$my_data_type_id = odbc_result($result,"data_type_id");
-			if ($my_data_type_id == 2 or $my_data_type_id == 3 or $my_data_type_id == 6) {
-				if (odbc_result($result,'units') == "") {
-					$json[odbc_result($result,'erdc_param') . "-" . odbc_result($result,'data_type_id')] =
-					odbc_result($result,'name') . " - " . odbc_result($result,'short_desc');
-				} else {
-					$json[odbc_result($result,'erdc_param') . "-" . odbc_result($result,'data_type_id')] =
-					odbc_result($result,'name') . " - " . odbc_result($result,'short_desc')
-					. " (" . odbc_result($result,'units') . ")";
-				}
-			}
-		}
-		// Close the DB connection
-		//odbc_close($result);
+
 	}
     // Echo results as JSON
     echo json_encode($json);
-    }
+}
 
 //Enumerate elements and monitor instance namesand associate with a particular monitor
 elseif ($query_type == "elements_for_monitor") {
@@ -211,38 +107,18 @@ elseif ($query_type == "elements_for_monitor") {
             join entity e on e.ENTITY_ID = ei.ENTITY_ID
             where erp.ERDC_PARAMETER_ID = $erdc_parameter_id;
             ";
-	if ($dbType == "mysql"){		
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
-			}
-		// Get results
-		while ($row = mysqli_fetch_assoc($result)) {
-			$json[$row['entity_id'] . "-" . $row['erdc_instance']]
-				= $row['display_name'] . " - " . $row['monitor_name'];
+
+    	$result = $db->execQuery($sql);
+		
+		foreach ($result as $row) {
+			$k = $row['ENTITY_ID'] . "-" . $row['ERDC_INSTANCE'];
+			$v = $row['DISPLAY_NAME'] . " - " . $row['MONITOR_NAME'];
+			$json[$k] = $v;
 			}
 		
-		// Close the DB connection
-		$result->close();
-	}
-	else{
-    	$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-		}
-		// Get results
-		
-    	while (odbc_fetch_row($result)) {
-			$json[odbc_result($result,"entity_id") . "-" . odbc_result($result,"erdc_instance")] 
-				= odbc_result($result,"display_name") . " - " . odbc_result($result,"monitor_name");
-			}
-	}
-	
     // Echo results as JSON
     echo json_encode($json);
-    }
+}
 	
 elseif ($query_type == "ranged_objects") {
 	
@@ -258,34 +134,11 @@ elseif ($query_type == "ranged_objects") {
                 where ro.instance_id = $erdc_instance_id               
                 ";
 
-		if ($dbType == "mysql"){		
-			$result = mysqli_query($db, $sql);
-			// Check query
-			if (!$result) {
-				die('Invalid query: ' . mysqli_error());
-				}
-			// Get results
-			while ($row = mysqli_fetch_assoc($result)) {
-				$json[$row['instance_id']. "-" . $row['id']]
-					= $row['object_name'];
-				}
-			
-			// Close the DB connection
-			$result->close();
-		}
-		else{
-
-			$result = odbc_exec($db, $sql);
-
-			if (!$result) {
-				die('Invalid query: ' . odbc_errormsg());
-			}
-			// Get results
+    	$result = $db->execQuery($sql);
 		
-    		while (odbc_fetch_row($result)) {
-				$json[odbc_result($result,"instance_id") . "-" . odbc_result($result,"id")] 
-					= odbc_result($result,"object_name");
-			}
+		foreach ($result as $row) {
+			$json[$row['INSTANCE_ID']. "-" . $row['ID']]
+			 = $row['OBJECT_NAME'];
 		}
 	}
 	// Echo results as JSON
@@ -297,12 +150,6 @@ elseif ($query_type == "ranged_objects") {
 //Enumerate metrics for specific monitor/element instance
 elseif ($query_type == "servicemonitor") {
     
-    //Test of variables
-    //echo $erdc_parameter_id . "\n";
-    //echo $data_type_id  . "\n";
-    //echo $entity_id  . "\n";
-    //echo $erdc_instance_id . "\n";
-
 	//$elementList is an array where each item is elementID-erdcID 	
 	$i = 0;
 	if (($data_type_id == 2) ||($data_type_id == 3)) {
@@ -313,7 +160,7 @@ elseif ($query_type == "servicemonitor") {
 			$erdc_instance_id = $ids[1];
 			
 			if ($data_type_id == 2) {
-				if ($dbType == "mysql")
+				if ($db->dbType == "mysql")
 				{
 				$sql = "select * 
 						from erdc_int_data eid
@@ -322,7 +169,7 @@ elseif ($query_type == "servicemonitor") {
 						and sampletime > date_sub(now(),interval  ". $time_frame . " second)
 						order by sampletime";
 				}
-				elseif($dbType == "oracle")
+				elseif($db->dbType == "oracle")
 				{
 				$sql = "select * 
 						from erdc_int_data eid
@@ -332,7 +179,7 @@ elseif ($query_type == "servicemonitor") {
 						order by sampletime";
 				}
 			} elseif ($data_type_id == 3) {
-				if ($dbType == "mysql")
+				if ($db->dbType == "mysql")
 				{
 				$sql = "select * 
 						from erdc_decimal_data eid
@@ -341,7 +188,7 @@ elseif ($query_type == "servicemonitor") {
 						and sampletime > date_sub(now(),interval  ". $time_frame . " second)
 						order by sampletime";
 				}
-				elseif($dbType == "oracle")
+				elseif($db->dbType == "oracle")
 				{
 
 				$sql = "select * 
@@ -359,83 +206,38 @@ elseif ($query_type == "servicemonitor") {
 				die('Invalid query');
 				}
 				
-			if ($dbType == "mysql"){
-				$result = mysqli_query($db, $sql);
-				// Check query
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-					}
-					
-				// Get results
+				$result = $db->execQuery($sql);
+			
 				$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-				while ($row = mysqli_fetch_assoc($result)) {
-					$sample_time = strtotime($row['sampletime'])-$offset;
+				foreach ($result as $row) {
+					$sample_time = strtotime($row['SAMPLETIME'])-$offset;
 					if ($sample_time >= $from_time) {
 						$x = $sample_time * 1000;
-						$y = (float)$row['value'];
+						$y = (float)$row['VALUE'];
 						$metric = array($x, $y);
 						array_push($performanceData, $metric);
 					   }
-					}
+				}
 				
 				
 				// Get Element Name
 				$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-				//echo "Select display_name from entity where entity_id = $element_id\n";
-				$result = mysqli_query($db, $sql_element_name);
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-				}
-				$row = mysqli_fetch_assoc($result);
-				$element_name = $row['display_name'];	
+				$result = $db->execQuery($sql_element_name);
+				$row = $result[0];
+				$element_name = $row['DISPLAY_NAME'];	
 				
-				
-				// Close the DB connection
-				$result->close();
-			}
-			elseif ($dbType == "oracle"){
 
-				$result = odbc_exec($db, $sql);
-				// Check query
-				if (!$result) {
-					die('Invalid query: ' . odbc_errormsg());
-					}
-					
-				// Get results
-				$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-				while (odbc_fetch_row($result)) {
-					$sample_time = strtotime(odbc_result($result,'sampletime'))-$offset;
-					if ($sample_time >= $from_time) {
-						$x = $sample_time * 1000;
-						$y = (float) odbc_result($result,'value');
-						$metric = array($x, $y);
-						array_push($performanceData, $metric);
-					   }
-					}
-				
-				
-				// Get Element Name
-				$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-				//echo "Select display_name from entity where entity_id = $element_id\n";
-				$result = odbc_exec($db, $sql_element_name);
-				if (!$result) {
-					die('Invalid query: ' . odbc_errormsg());
-				}
-				$row = mysqli_fetch_assoc($result);
-				$element_name = odbc_result($result,'display_name');	
-
-		}
-
-		array_push($oneElement, $element_name);
-		array_push($oneElement, $performanceData);
-		array_push($json, $oneElement);
-		$oneElement = array();
-		$performanceData = array();
-		$i++;
+				array_push($oneElement, $element_name);
+				array_push($oneElement, $performanceData);
+				array_push($json, $oneElement);
+				$oneElement = array();
+				$performanceData = array();
+				$i++;
 			
 		
 	}
-}elseif ($data_type_id == 6) {
+}
+	elseif ($data_type_id == 6) {
 		
 		foreach($objectList as $single_ranged_object) {
 			
@@ -443,7 +245,7 @@ elseif ($query_type == "servicemonitor") {
 			$erdc_instance_id = $element_and_ranged[0];
 			$ranged_object_id = $element_and_ranged[1];
 
-			if ($dbType == "mysql")
+			if ($db->dbType == "mysql")
 			{
 			$sql = "select value,sample_time
 				from ranged_object_value rov
@@ -458,7 +260,7 @@ elseif ($query_type == "servicemonitor") {
 				order by rov.sample_time
 				";
 			}
-			elseif ($dbType == "oracle")
+			elseif ($db->dbType == "oracle")
 			{
 
 			$sql = "select value,sample_time
@@ -475,20 +277,15 @@ elseif ($query_type == "servicemonitor") {
 				";
 
 			}
-			if ($dbType == "mysql"){
-				$result = mysqli_query($db, $sql);
-				// Check query
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-					}
-					
-				// Get results
+			
+				$result = $db->execQuery($sql);
+
 				$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-				while ($row = mysqli_fetch_assoc($result)) {
-					$sample_time = strtotime($row['sample_time'])-$offset;
+				foreach($result as $row) {
+					$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 					if ($sample_time >= $from_time) {
 						$x = $sample_time * 1000;
-						$y = (float)$row['value'];
+						$y = (float)$row['VALUE'];
 						$metric = array($x, $y);
 						array_push($performanceData, $metric);
 					   }
@@ -499,73 +296,18 @@ elseif ($query_type == "servicemonitor") {
 										join erdc_instance ei on ei.entity_id = e.entity_id
 										where erdc_instance_id = $erdc_instance_id";
 				
-				$result = mysqli_query($db, $sql_element_name);
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-				}
-				$row = mysqli_fetch_assoc($result);
-				$element_name = $row['display_name'];
+				$result = $db->execQuery($sql_element_name);
+				$row = $result[0];
+				$element_name = $row['DISPLAY_NAME'];
 				
 				// For ranged data, use the object name & element name in the series legend
 				$sql_object_name = "select object_name from ranged_object ro where ro.id = $ranged_object_id";
 
-				$result = mysqli_query($db, $sql_object_name);
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-				}
-				$row = mysqli_fetch_assoc($result);
+				$result = $db->execQuery($sql_object_name);
+				$row = $result[0];
 				$element_name = $row['object_name'] . " - " . $element_name;
 				
-				// Close the DB connection
-				$result->close();
-			}elseif ($dbType == "oracle" ){
-				$result = odbc_exec($db, $sql);
-				// Check query
-				if (!$result) {
-					die('Invalid query: ' . odbc_errormsg());
-					}
-					
-				// Get results
-				$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-				while (odbc_fetch_row($result)) {
-					$sample_time = strtotime(odbc_result($result,'sample_time'))-$offset;
-					if ($sample_time >= $from_time) {
-						$x = $sample_time * 1000;
-						$y = (float) odbc_result($result,'value');
-						$metric = array($x, $y);
-						array_push($performanceData, $metric);
-					   }
-					}
-			
-				// Get Element Name
-				$sql_element_name = "select display_name from entity e 
-										join erdc_instance ei on ei.entity_id = e.entity_id
-										where erdc_instance_id = $erdc_instance_id";
-				
-				$result = odbc_exec($db, $sql_element_name);
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-				}
-				$row = odbc_fetch_row($result);
-				$element_name = odbc_result($result,'display_name');
-				
-				// For ranged data, use the object name & element name in the series legend
-				$sql_object_name = "select object_name from ranged_object ro where ro.id = $ranged_object_id";
 
-				$result = odbc_exec($db, $sql_object_name);
-				if (!$result) {
-					die('Invalid query: ' . mysqli_error());
-				}
-				$row = odbc_fetch_row($result);
-				$element_name = odbc_result($result,'object_name') . " - " . $element_name;
-				
-			
-
-
-
-
-
-			}
 			
 			array_push($oneElement, $element_name);
 			array_push($oneElement, $performanceData);
@@ -574,11 +316,12 @@ elseif ($query_type == "servicemonitor") {
 			$performanceData = array();
 			$i++;
 			
+		
 		}
 	}
     // Echo results as JSON
     echo json_encode($json);
-    }
+}
 
 // Enumerate elements with performance counters   
 elseif ($query_type == "elements_for_performance") {
@@ -592,39 +335,24 @@ elseif ($query_type == "elements_for_performance") {
             order by display_name;
             ";
 			
-	if ($dbType == "mysql"){	
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
+	    $result = $db->execQuery($sql);
+		
+		foreach ($result as $row) {
+			$json[$row['DISPLAY_NAME']] = $row['ENTITY_ID'];
 		}
-		// Get results
-		while ($row = mysqli_fetch_assoc($result)) {
-			$json[$row['display_name']] = $row['entity_id'];
-		}
-		// Close the DB connection
-		$result->close();
-	}elseif ($dbType == "oracle"){
-		$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-		}
-		// Get results
-		while (odbc_fetch_row($result)) {
-			$json[odbc_result($result,"display_name")] = odbc_result($result,"entity_id");
-		}
-    }
+	
 	// Echo results as JSON
     echo json_encode($json);
-    }
+}
 
 // Get performance metrics
 elseif ($query_type == "performance") {
 
 	foreach ($elementList as $element_id) {
+
+
 		if ($performance_monitor == "cpu") {
-			if ($dbType == "mysql") {
+			if ($db->dbType == "mysql") {
 			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.cpu_usr, pa.cpu_sys , pa.cpu_wio
 					from performance_sample ps 
 					join performance_aggregate pa on pa.sample_id = ps.id
@@ -632,7 +360,7 @@ elseif ($query_type == "performance") {
 					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
 					order by ps.sample_time";
 			}
-			elseif($dbType == "oracle") {
+			elseif($db->dbType == "oracle") {
 			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.cpu_usr, pa.cpu_sys , pa.cpu_wio
 					from performance_sample ps 
 					join performance_aggregate pa on pa.sample_id = ps.id
@@ -642,9 +370,9 @@ elseif ($query_type == "performance") {
 
 			}
 					
-		} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
-				  or $performance_monitor == "worst_disk_busy") {
-			if ($dbType == "mysql") {
+		}
+		elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage" or $performance_monitor == "worst_disk_busy"){
+			if ($db->dbType == "mysql") {
 			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.$performance_monitor as value
 					from performance_sample ps 
 					join performance_aggregate pa on pa.sample_id = ps.id
@@ -652,7 +380,7 @@ elseif ($query_type == "performance") {
 					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
 					order by ps.sample_time";
 			}
-			elseif($dbType == "oracle") {
+			elseif($db->dbType == "oracle") {
 			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.$performance_monitor as value
 					from performance_sample ps 
 					join performance_aggregate pa on pa.sample_id = ps.id
@@ -662,8 +390,9 @@ elseif ($query_type == "performance") {
 
 
 			}
-		} elseif ($performance_monitor == "memory") {
-			if ($dbType == 'mysql')
+		}
+		elseif ($performance_monitor == "memory") {
+			if ($db->dbType == 'mysql')
 			{
 			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
 					from performance_sample ps
@@ -673,7 +402,7 @@ elseif ($query_type == "performance") {
 					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
 					order by ps.sample_time";
 			}
-			elseif($dbType == "oracle") {
+			elseif($db->dbType == "oracle") {
 			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
 					from performance_sample ps
 					join performance_aggregate pa on pa.sample_id = ps.id
@@ -683,94 +412,43 @@ elseif ($query_type == "performance") {
 					order by ps.sample_time";
 
 			}
-		} else {
+
+		}
+		else {
 			die('Invalid query');
-			}
+		}
      
-		if ($dbType == "mysql"){
-			$result = mysqli_query($db, $sql);
-			// Check query
-			if (!$result) {
-				die('Invalid query: ' . mysqli_error());
-				}
-			
-			
-			// Get results 
-			while ($row = mysqli_fetch_assoc($result)) {
-				$sample_time = strtotime($row['sample_time'])-$offset;
+			$result = $db->execQuery($sql);
+
+			foreach($result as $row) {
+				$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 				$x = $sample_time * 1000;
 				if ($performance_monitor == "cpu") {
-					$a = (float)$row['cpu_usr'];
-					$b = (float)$row['cpu_sys'];
-					$c = (float)$row['cpu_wio'];
+					$a = (float)$row['CPU_USR'];
+					$b = (float)$row['CPU_SYS'];
+					$c = (float)$row['CPU_WIO'];
 					$y = ($a + $b + $c);
 				} elseif ($performance_monitor == "memory") {
-					$total_ram = (float)$row['memsize'];
-					$free_ram = (float)$row['free_mem'];
+					$total_ram = (float)$row['MEMSIZE'];
+					$free_ram = (float)$row['FREE_MEM'];
 					$used_ram = $total_ram - $free_ram;
 					$y = round(($used_ram / $total_ram * 100), 1);
 				} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
 							or $performance_monitor == "worst_disk_busy") {
-					$y = (float)$row["$value"];
+								$y = (float)$row['VALUE'];
 					}
 				$metric = array($x, $y);
 				array_push($performanceData, $metric);
 				}
 			
-			// Get Element Name
-			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-			$result = mysqli_query($db, $sql_element_name);
-			if (!$result) {
-				die('Invalid query: ' . mysqli_error());
-			}
-			$row = mysqli_fetch_assoc($result);
-			$element_name = $row['display_name'];			
-			
-			// Close the DB connection
-			$result->close();
-		}else{
-			//echo($sql. "\n\n");
-			$result=odbc_exec($db,$sql);
-			// Check query
-			if (!$result) {
-				die('Invalid query: ' . odbc_errormsg());
-				}
-			
-			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;
-			
-			// Get results 
-			while (odbc_fetch_row($result)) {
-				$sample_time = strtotime(odbc_result($result,"sample_time"))-$offset;
-				if ($sample_time >= $from_time) {
-					$x = $sample_time * 1000;
-					if ($performance_monitor == "cpu") {
-						$a = (float)odbc_result($result,"cpu_usr");
-						$b = (float)odbc_result($result,"cpu_sys");
-						$c = (float)odbc_result($result,"cpu_wio");
-						$y = ($a + $b + $c);
-					} elseif ($performance_monitor == "memory") {
-						$total_ram = (float)odbc_result($result,"memsize");
-						$free_ram = (float)odbc_result($result,"free_mem");
-						$used_ram = $total_ram - $free_ram;
-						$y = round(($used_ram / $total_ram * 100), 1);
-					} elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage"
-								or $performance_monitor == "worst_disk_busy") {
-						$y = (float)odbc_result($result,"value");
-						}
-					$metric = array($x, $y);
-					array_push($performanceData, $metric);
-					}
-
-				}
-			// Get Element Name
-			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-			$result = odbc_exec($db, $sql_element_name);
-			odbc_fetch_row($result);
-			if (!$result) {
-				die('Invalid query: ' . odbc_errormsg());
-			}
-			$element_name = odbc_result($result, "display_name");
-		}
+		// Get Element Name
+		$sql_element_name = "Select display_name from entity where entity_id = $element_id";
+		$result = $db->execQuery($sql_element_name);
+		$row = $result[0];
+		$element_name = $row['DISPLAY_NAME'];			
+		
+		
+		
 		array_push($oneElement, $element_name);
 		array_push($oneElement, $performanceData);
 		//print_r($performanceData);
@@ -780,7 +458,8 @@ elseif ($query_type == "performance") {
 	}
     // Echo results as JSON
     echo json_encode($json);
-    }
+}
+
 elseif ($query_type == "listNetworkDevice") {
 	$sql = "select e.entity_id, e.display_name from entity e 
 			join entity_subtype es on es.entity_subtype_id = e.entity_subtype_id
@@ -788,36 +467,11 @@ elseif ($query_type == "listNetworkDevice") {
 			order by es.name";
 			
 			
-	if ($dbType == "mysql"){		
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
-			}
-		// Get results
-		while ($row = mysqli_fetch_assoc($result)) {
-			$json[$row['entity_id']]
-				= $row['display_name'];
-			}
-		
-		// Close the DB connection
-		$result->close();
+	$result = $db->execQuery($sql);
+	foreach ($result as $row) {
+		$json[$row['ENTITY_ID']] = $row['DISPLAY_NAME'];
 	}
-	else{
-
-    	$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-		}
-		// Get results
-		
-    	while (odbc_fetch_row($result)) {
-			$json[odbc_result($result,"entity_id") ] 
-				= odbc_result($result,"display_name");
-			}
-			
-	}
+	
 	
     // Echo results as JSON
     echo json_encode($json);
@@ -830,37 +484,11 @@ elseif ($query_type == "devicePort") {
 			from net_device_port_config pc 
 			where pc.entity_id = $elementList[0]";
 			
-			
-	if ($dbType == "mysql"){		
-		$result = mysqli_query($db, $sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . mysqli_error());
+	$result = $db->execQuery($sql);
+	foreach($result as $row) {
+			$json[$row['IF_INDEX']]
+				= $row['IF_NAME'];
 			}
-		// Get results
-		while ($row = mysqli_fetch_assoc($result)) {
-			$json[$row['if_index']]
-				= $row['if_name'];
-			}
-		
-		// Close the DB connection
-		$result->close();
-	}
-	else{
-
-    	$result=odbc_exec($db,$sql);
-		// Check query
-		if (!$result) {
-			die('Invalid query: ' . odbc_errormsg());
-		}
-		// Get results
-		
-    	while (odbc_fetch_row($result)) {
-			$json[odbc_result($result,"if_index")] 
-				= odbc_result($result,"if_name");
-			}
-
-	}
 	
     // Echo results as JSON
     echo json_encode($json);
@@ -870,7 +498,8 @@ elseif ($query_type == "devicePort") {
 elseif ($query_type == "network") {
 	$i = 0;
 	foreach($ports as $singlePort) {
-		if ($dbType == "mysql"){
+
+		if ($db->dbType == "mysql"){
 		$sql = "select * from net_device_perf_port pp 
 				join net_device_port_config pc on pp.if_index = pc.if_index 
 				join net_device_perf_sample ps on ps.id = pp.sample_id
@@ -879,7 +508,7 @@ elseif ($query_type == "network") {
 				and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)		  
 				order by ps.sample_time";
 		}
-		elseif($dbType == "oracle"){
+		elseif($db->dbType == "oracle"){
 			$sql = "select * from net_device_perf_port pp 
 				join net_device_port_config pc on pp.if_index = pc.if_index 
 				join net_device_perf_sample ps on ps.id = pp.sample_id
@@ -890,22 +519,18 @@ elseif ($query_type == "network") {
 
 		}
 
-		if ($dbType == "mysql"){		
-			$result = mysqli_query($db, $sql);
-			// Check query
-			if (!$result) {
-				die('Invalid query: ' . mysqli_error());
-				}
-			// Get results
+			$result = $db->execQuery($sql);
+			
 			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-			while ($row = mysqli_fetch_assoc($result)) {
-				$sample_time = strtotime($row['sample_time'])-$offset;
+			foreach ($result as $row) {
+				$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 				$x = $sample_time * 1000;
 				if(preg_match("/kbps/",$performance_monitor)) {
-					$y = (float)$row["$performance_monitor"] / 1024;
+
+					$y = (float)$row[strtoupper("$performance_monitor")] / 1024;
 				}
 				else {
-					$y = (float)$row["$performance_monitor"];
+					$y = (float)$row[strtoupper("$performance_monitor")];
 				}
 				$metric = array($x, $y);
 				array_push($performanceData, $metric);
@@ -915,61 +540,12 @@ elseif ($query_type == "network") {
 			$sql_port_name = "Select if_name from net_device_port_config 
 								where entity_id = $elementList[0] 
 								and if_index = $singlePort";
-			//echo "Select display_name from entity where entity_id = $element_id\n";
-			$result = mysqli_query($db, $sql_port_name);
-			if (!$result) {
-				die('Invalid query: ' . mysqli_error());
-			}
-			$row = mysqli_fetch_assoc($result);
-			$port_name = $row['if_name'];
+			$result = $db->execQuery($sql_port_name);
+			$row = $result[0];
+			$port_name = $row['IF_NAME'];
 			
-			
-			// Close the DB connection
-			$result->close();
-		}
-		else{
+		
 
-			$result=odbc_exec($db,$sql);
-			// Check query
-			if (!$result) {
-				die('Invalid query: ' . odbc_errormsg());
-			}
-
-			// Get results
-
-			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-			while (odbc_fetch_row($result)) {
-				$sample_time = strtotime(odbc_result($result, 'sample_time'))-$offset;
-				$x = $sample_time * 1000;
-				if(preg_match("/kbps/",$performance_monitor)) {
-					$y = (float) odbc_result($result, "$performance_monitor") / 1024;
-				}
-				else {
-					$y = (float) odbc_result($result, "$performance_monitor");
-				}
-				$metric = array($x, $y);
-				array_push($performanceData, $metric);
-			}
-			
-			// Get Port Name
-			$sql_port_name = "Select if_name from net_device_port_config 
-								where entity_id = $elementList[0] 
-								and if_index = $singlePort";
-
-
-			$result = odbc_exec($db, $sql_port_name);
-			if (!$result) {
-				die('Invalid query: ' . odbc_errormsg());
-			}
-			$port_name = odbc_result($result, 'if_name');
-			
-
-
-
-
-
-
-		}
 		array_push($oneElement, $port_name);
 		array_push($oneElement, $performanceData);
 		array_push($json, $oneElement);
@@ -977,10 +553,12 @@ elseif ($query_type == "network") {
 		$performanceData = array();
 		$i++;
 	
+		
 	}
     // Echo results as JSON
     echo json_encode($json);
 	
+
 }
 
     
