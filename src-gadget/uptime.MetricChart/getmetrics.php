@@ -585,7 +585,7 @@ elseif ($query_type == "network") {
 				order by ps.sample_time";
 
 		}
-		elseif($db-dbType == "mssql")
+		elseif($db->dbType == "mssql")
 		{
 			$sql = "select * from net_device_perf_port pp 
 				join net_device_port_config pc on pp.if_index = pc.if_index 
