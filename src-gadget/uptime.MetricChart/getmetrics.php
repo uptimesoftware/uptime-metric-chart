@@ -178,6 +178,15 @@ elseif ($query_type == "servicemonitor") {
 						and sampletime > sysdate - interval  '". $time_frame . "' second
 						order by sampletime";
 				}
+				elseif($db->dbType == "mssql")
+				{
+					$sql = "select * 
+							from erdc_int_data eid
+							where eid.erdc_instance_id = $erdc_instance_id
+							and eid.erdc_parameter_id = $erdc_parameter_id 
+							and sampletime > DATEADD(second, -". $time_frame . ", GETDATE())
+							order by sampletime";
+				}
 			} elseif ($data_type_id == 3) {
 				if ($db->dbType == "mysql")
 				{
@@ -199,6 +208,16 @@ elseif ($query_type == "servicemonitor") {
 						order by sampletime";
 
 
+				}
+				elseif($db->dbType == "mssql")
+				{
+
+				$sql = "select * 
+						from erdc_decimal_data eid
+						where eid.erdc_instance_id = $erdc_instance_id
+						and eid.erdc_parameter_id = $erdc_parameter_id
+						and sampletime > DATEADD(second, -". $time_frame . ", GETDATE())
+						order by sampletime";
 				}
 			}
 		
@@ -273,6 +292,23 @@ elseif ($query_type == "servicemonitor") {
 				and ep.name = rov.name
 				and ep.erdc_parameter_id = $erdc_parameter_id
 				and rov.sample_time > sysdate - interval  '". $time_frame . "' second
+				order by rov.sample_time
+				";
+
+			}
+			elseif ( $db->dbType == "mssql")
+			{
+
+			$sql = "select value,sample_time
+				from ranged_object_value rov
+				join ranged_object ro on rov.ranged_object_id = ro.id
+				join erdc_instance ei on ei.erdc_instance_id = ro.instance_id				
+				join erdc_configuration ec on ei.configuration_id = ec.id
+				join erdc_parameter ep on ep.erdc_base_id = ec.erdc_base_id
+				where rov.ranged_object_id = $ranged_object_id
+				and ep.name = rov.name
+				and ep.erdc_parameter_id = $erdc_parameter_id
+				and rov.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
 				order by rov.sample_time
 				";
 
@@ -369,6 +405,16 @@ elseif ($query_type == "performance") {
 					order by ps.sample_time";
 
 			}
+			elseif($db->dbType == "mssql")
+			{
+			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.cpu_usr, pa.cpu_sys , pa.cpu_wio
+				from performance_sample ps 
+				join performance_aggregate pa on pa.sample_id = ps.id
+				where ps.uptimehost_id = $element_id	
+				and ps.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
+				order by ps.sample_time";
+			}
+
 					
 		}
 		elseif ($performance_monitor == "used_swap_percent" or $performance_monitor == "worst_disk_usage" or $performance_monitor == "worst_disk_busy"){
@@ -388,6 +434,16 @@ elseif ($query_type == "performance") {
 					and ps.sample_time > sysdate - interval  '". $time_frame . "' second
 					order by ps.sample_time";
 
+
+			}
+			elseif($db->dbType == "mssql")
+			{
+			$sql = "Select ps.uptimehost_id, ps.sample_time, pa.$performance_monitor as value
+				from performance_sample ps 
+				join performance_aggregate pa on pa.sample_id = ps.id
+				where ps.uptimehost_id = $element_id
+				and ps.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
+				order by ps.sample_time";
 
 			}
 		}
@@ -412,6 +468,17 @@ elseif ($query_type == "performance") {
 					order by ps.sample_time";
 
 			}
+			elseif($db->dbType == "mssql")
+			{
+			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
+					from performance_sample ps
+					join performance_aggregate pa on pa.sample_id = ps.id
+					join entity_configuration ec on ec.entity_id = ps.uptimehost_id
+					where ps.uptimehost_id = $element_id
+					and ps.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
+					order by ps.sample_time";
+			}
+
 
 		}
 		else {
@@ -515,6 +582,17 @@ elseif ($query_type == "network") {
 				where pc.entity_id = $elementList[0] 
 				and	pp.if_index = $singlePort
 				and ps.sample_time > sysdate - interval  '". $time_frame . "' second 		  
+				order by ps.sample_time";
+
+		}
+		elseif($db->dbType == "mssql")
+		{
+			$sql = "select * from net_device_perf_port pp 
+				join net_device_port_config pc on pp.if_index = pc.if_index 
+				join net_device_perf_sample ps on ps.id = pp.sample_id
+				where pc.entity_id = $elementList[0] 
+				and	pp.if_index = $singlePort
+				and ps.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
 				order by ps.sample_time";
 
 		}
