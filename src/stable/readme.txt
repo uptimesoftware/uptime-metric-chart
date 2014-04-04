@@ -16,6 +16,7 @@ Features:
 * Tell us which features you would like to see in a future release!
 
 Updates:
+v2.7 - MSSQL datastores now supported. 
 v2.6 - Simplified the gadgets dependencies to improve the initial install process.
 v2.5 - Now able to display metrics from multiple elements on the same graph. Along with expanded support for Network Device Metrics & additional types of Retained Metrics.
 v2.0 - Supports Oracle backend as well the times should now be displayed in the client timezone rather then UTC.
@@ -43,8 +44,8 @@ Installation Instructions:
 Additional Oracle Install Steps:
 --------------------------------
 In order to use this gadget with an Oracle datastore, you will need to install the Oracle Instant Client & ODBC Drivers on your up.time monitoring.
-The process for this varies for Windows & Linux. Once the appropriate ODBC Driver has been installed, you will need to edit the new getmetrics.php page on your 
-monitoring station ( <uptime_dir>/gadgets/definitions/uptime.MetricChart/getmetrics.php this file may not exist until you've 'refreshed gadgets via the GUI') and uncomment one of the odbc_connect strings in the 'Oracle Connection details' section of the script(Near lines 112 to 125). 
+The process for this varies for Windows & Linux. Once the appropriate ODBC Driver has been installed, you will need to edit the uptimeDB.php file for this gadget on your 
+monitoring station ( <uptime_dir>/gadgets/definitions/uptime.MetricChart/uptimeDB.php this file may not exist until you've 'refreshed gadgets via the GUI') and uncomment one of the ODBC Driver lines near the top of the file . 
 
 Oracle ODBC Driver Linux Install Steps:
 --------------------
@@ -62,7 +63,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME/lib
  
 5. Restart uptime_httpd service to pick up this change (ie. /etc/init.d/uptime_httpd stop  /etc/init.d/uptime_httpd start)
 
-6. Make sure to uncomment one of the odbc_connect lines in <uptime_dir>/GUI/gadgets/metricchart/getmetrics.php as explained above.
+6. Make sure to uncomment one of the odbc driver lines in <uptime_dir>/gadgets/definitions/uptime.MetricChart/uptimeDB.php as explained above.
 
 
 Oracle ODBC Driver Windows Install Steps:
@@ -85,9 +86,25 @@ ie. instantclient-basic-windows.x64-12.1.0.1.0.zip
 6. Update the Path Environment Variable to include the path to the oracle driver. Append ";C:\Oracle\instantclient_12_1" to end of the variable.
 To set this variable Go to System Properties > Advanced > Environment Variables > Under System variables find Path and edit it.
 
-7. Make sure to uncomment one of the odbc_connect lines in <uptime_dir>/GUI/gadgets/metricchart/getmetrics.php as explained above.
+7. Make sure to uncomment one of the odbc driver lines in  <uptime_dir>/gadgets/definitions/uptime.MetricChart/uptimeDB.php as explained above.
 
 If your having trouble with installing just the Oracle InstantClient & ODBC the likely issue is you are missing "Microsoft Visual C++ 2010 SP1 Redistributable Package (x64)" package that has the DLL that this driver needs, another option is to install these drivers as part of the 'Oracle Data Access Components' which is a bundle of Oracle drivers full fleged installer compared to the zips mentioned above. This bundle can be found on the Oracle website here: http://www.oracle.com/technetwork/database/windows/downloads/index.html
+
+
+Additional MSSQL/SQLServer Install Steps:
+-----------------------------------------
+
+In order to use the Metric Chart gadget with a SQLServer based Datastore, you will need to uncomment the appropriate ODBC Driver in <uptime_dir>/gadgets/definitions/uptime.MetricChart/uptimeDB.php
+
+Windows Based monitoring stations will already have ODBC itself installed as part of Windows. 
+
+But Linux based monitoring stations will require the unixODBC package to be installed.
+
+This package should include the /usr/lib64/libtdsodbc.so.0 SQLServer ODBC Driver for Windows.
+
+See step #1 of 'Oracle ODBC Driver Linux Install Steps:' above for more details on installing unixODBC
+
+
 
 
 Upgrading from an earlier version of the Metric Chart
