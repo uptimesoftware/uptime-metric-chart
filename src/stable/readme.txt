@@ -100,7 +100,7 @@ Windows Based monitoring stations will already have ODBC itself installed as par
 
 But Linux based monitoring stations will require the unixODBC package to be installed.
 
-This package should include the /usr/lib64/libtdsodbc.so.0 SQLServer ODBC Driver for Windows.
+This package should include the /usr/lib64/libtdsodbc.so.0 SQLServer ODBC Driver needed for MSSQL/SQLserver.
 
 See step #1 of 'Oracle ODBC Driver Linux Install Steps:' above for more details on installing unixODBC
 
@@ -109,7 +109,7 @@ See step #1 of 'Oracle ODBC Driver Linux Install Steps:' above for more details 
 
 Upgrading from an earlier version of the Metric Chart
 -----------------------------------------------------
-* Install the newest version of the .upk via the regular plugin manager process.
+* Install/upgrade to  the new version of the gadget via the Extension Manager (Goto the Dashboards Tab -> Click the Gear Icon in the upper right corner, and select 'Search for Gadgets' )
 
 * Navigate to the Up.time Dashboards where your metric chart gadget is located.
 
