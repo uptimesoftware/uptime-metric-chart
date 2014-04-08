@@ -1,0 +1,19 @@
+{
+	"name": "uptime.MetricChart",
+	"version": "2.7",
+	"description": "Dynamically create real-time dashboard charts from any performance or custom metric in up.time.",
+	"main": "src-gadget/uptime.MetricChart/metricChart.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/uptimesoftware/uptime-metric-chart.git"
+	},
+	"dependencies": {
+		"uptime-gadget-tasks": "git://github.com/uptimesoftware/uptime-gadget-tasks.git"
+	},
+	"devDependencies": {
+		"grunt": "~0.4.1",
+		"grunt-contrib-compress": "~0.5.2",
+    	"grunt-contrib-copy": "~0.5.0",
+		"grunt-maven-tasks": "~1.0.1"
+	}
+}

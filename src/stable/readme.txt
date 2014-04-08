@@ -1,4 +1,4 @@
-Metric Chart v2.6
+Metric Chart v2.7
 ------------------
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to house your new graphs.
 
@@ -16,7 +16,7 @@ Features:
 * Tell us which features you would like to see in a future release!
 
 Updates:
-v2.7 - MSSQL datastores now supported. 
+v2.7 - MSSQL/SQLserver datastores now supported. 
 v2.6 - Simplified the gadgets dependencies to improve the initial install process.
 v2.5 - Now able to display metrics from multiple elements on the same graph. Along with expanded support for Network Device Metrics & additional types of Retained Metrics.
 v2.0 - Supports Oracle backend as well the times should now be displayed in the client timezone rather then UTC.
