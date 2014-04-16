@@ -2,6 +2,9 @@
 ###Description
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to housing your new graphs.
 
+##New in v2.8
+* Fixed network device performance graphs to report appropriate data.
+
 ##New Features in v2.7
 * Now supports SQLServer backends - [readme for ODBC Driver Install Steps & Additional Details] (../master/src/stable/readme.txt)
 
@@ -13,6 +16,7 @@ The new version of the Metric Chart now allows you to graph metrics for multiple
 ###Version Compatibility
                         | 7.3 | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
     --------------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+      Metric Chart v2.8 |  X  |     |     |     |     |     |     |     |     |     
       Metric Chart v2.7 |  X  |     |     |     |     |     |     |     |     |     
 	  Metric Chart v2.6 |     |  X  |     |     |     |     |     |     |     |
       Metric Chart v2.5 |     |  X  |     |     |     |     |     |     |     |
