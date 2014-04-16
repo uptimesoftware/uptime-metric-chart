@@ -1,6 +1,0 @@
-name=Metric Chart Gadget
-version=2.61
-platforms=windows,linux
-description=The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!. Works with Mysql & Oracle datastores 
-requiresAgentScript=false
-restartCore=false

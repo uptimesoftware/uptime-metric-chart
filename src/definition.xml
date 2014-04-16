@@ -5,6 +5,23 @@
                 thumbnail="metricChart.Thumbnail.png">
         <Require feature="dynamic-height" />
     </ModulePrefs>
+	<gadget_version>
+		2.8
+	</gadget_version>
+	<grid_info>
+		<supported_versions>
+			7.3
+		</supported_versions>
+		<supported_platforms>
+			windows,linux
+		</supported_platforms>
+		<requires_agent_scripts>
+			false
+		</requires_agent_scripts>
+		<upgrade_in_place>
+			true
+		</upgrade_in_place>
+	</grid_info>
     <Content type="html">
 	<![CDATA[ 
 	<!DOCTYPE html>
