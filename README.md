@@ -6,7 +6,7 @@ The Metric Chart gadget makes it possible to graph metrics collected by up.time 
 * Fixed network device performance graphs to report appropriate data.
 
 ##New Features in v2.7
-* Now supports SQLServer backends - [readme for ODBC Driver Install Steps & Additional Details] (../master/src/stable/readme.txt)
+* Now supports SQLServer backends - [readme for ODBC Driver Install Steps & Additional Details](http://the-grid.uptimesoftware.com/gadget/uptime-metric-chart.html)
 
 
 ##New Features in v2.5
