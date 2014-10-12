@@ -104,18 +104,21 @@ if ($query_type == "elements_for_performance") {
     $elements = $uptime_api->getElements("type=Server&isMonitored=1");
 
     foreach ($elements as $d) {
-        $has_ppg = False;
-        foreach($d['monitors'] as $monitor)
+        if ($d['typeSubtype'] != "VcenterHostSystem")
         {
-            if($monitor['name'] == "Platform Performance Gatherer")
+            $has_ppg = False;
+            foreach($d['monitors'] as $monitor)
             {
-                $has_ppg = True;
-                break;
+                if($monitor['name'] == "Platform Performance Gatherer")
+                {
+                    $has_ppg = True;
+                    break;
+                }
             }
-        }
-        if ($has_ppg)
-        {
-            $json[$d['name']] = $d['id'];
+            if ($has_ppg)
+            {
+                $json[$d['name']] = $d['id'];
+            }
         }
     }
 
