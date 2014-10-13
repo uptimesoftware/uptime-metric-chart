@@ -14,6 +14,7 @@
 	var gadgetInstanceId = uptimeGadget.getInstanceId();
 	var currentURL = $("script#ownScript").attr("src");	
 	var getMetricsPath = currentURL.substr(0,$("script#ownScript").attr("src").lastIndexOf("/")+1) + 'getmetrics.php';
+	var getDropDownsPath = currentURL.substr(0,$("script#ownScript").attr("src").lastIndexOf("/")+1) + 'getdropdowns.php';
 	var timeFrameOptions = {"3600" : "hour", "21600" : "6 hours",
 				"43200" : "12 hours", "86400" : "day",
 				"172800" : "2 days", "604800" : "week",
@@ -105,7 +106,7 @@
 			$("select.service-monitor-elements").chosen();
 			$("select.service-monitor-ranged").chosen();
 			
-			requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=monitors';
+			requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=monitors';
 			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 			$.getJSON(requestString, function(data) {
 			}).done(function(data) {
@@ -195,7 +196,7 @@
 	$("select.service-monitor-metrics").on('change', function(evt, params) {
 		$("select.service-monitor-elements").empty();
 		$("select.service-monitor-elements").trigger("chosen:updated");
-		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_monitor&monitor='
+		requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_monitor&monitor='
 						+ $("select.service-monitor-metrics").val();
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 		$.getJSON(requestString, function(data) {
@@ -238,7 +239,7 @@
 		
 		$("select.service-monitor-ranged").empty();
 		$("select.service-monitor-ranged").trigger("chosen:updated");
-		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=ranged_objects&element='
+		requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=ranged_objects&element='
 						+ $("select.service-monitor-elements").val() 
 						+ '&object_list=' + $("select.service-monitor-ranged").val();
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
@@ -271,7 +272,7 @@
 	$("select.performance-metrics").on('change', function(evt, params) {
 		$("select.performance-elements").empty();
 		$("select.performance-elements").trigger("chosen:updated");
-		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_performance';
+		requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_performance';
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 		$.getJSON(requestString, function(data) {}).done(function(data) {
 			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Request succeeded!')};
@@ -313,7 +314,7 @@
 	$("select.network-metrics").on('change', function(evt, params) {
 		$("select.network-elements").empty();
 		$("select.network-elements").trigger("chosen:updated");
-		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=listNetworkDevice';
+		requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=listNetworkDevice';
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 		$.getJSON(requestString, function(data) {}).done(function(data) {
 			if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Request succeeded!')};
@@ -340,7 +341,7 @@
 	$("select.network-elements").on('change', function(evt, params) {
 		$("select.network-ports").empty();
 		$("select.network-ports").trigger("chosen:updated");		
-		requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=devicePort'
+		requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=devicePort'
 						+ '&element=' + $("select.network-elements").val();
 		if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
 		$.getJSON(requestString, function(data) {}).done(function(data) {
