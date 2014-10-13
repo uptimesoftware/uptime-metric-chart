@@ -312,7 +312,7 @@ elseif ($query_type == "listNetworkDevice") {
             
     $result = $db->execQuery($sql);
     foreach ($result as $row) {
-        $json[$row['ENTITY_ID']] = $row['DISPLAY_NAME'];
+        $json[$row['DISPLAY_NAME']] = $row['ENTITY_ID'];
     }
     
     
@@ -331,8 +331,8 @@ elseif ($query_type == "devicePort") {
             
     $result = $db->execQuery($sql);
     foreach($result as $row) {
-            $json[$row['IF_INDEX']]
-                = $row['IF_NAME'];
+            $json[$row['IF_NAME']]
+                = $row['IF_INDEX'];
             }
     
     // Echo results as JSON
