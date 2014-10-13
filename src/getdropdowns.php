@@ -222,8 +222,8 @@ elseif ($query_type == "elements_for_monitor") {
         $result = $db->execQuery($sql);
         
         foreach ($result as $row) {
-            $v = $row['ENTITY_ID'];
-            $k = $row['DISPLAY_NAME'];
+            $v = $row['ENTITY_ID'] . "-" . $row['ERDC_INSTANCE'];
+            $k = $row['DISPLAY_NAME'] . " - " . $row['MONITOR_NAME'];
             $json[$k] = $v;
             }
         
