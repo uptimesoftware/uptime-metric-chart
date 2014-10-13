@@ -594,14 +594,13 @@
                     text: ""}},
             plotOptions: {spline: {marker: {enabled: false}},
                     areaspline: {marker: {enabled: false}}},
-            //series: [{}]};
             series: []};
         requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
                         + '&monitor=' + settings.metricValue + '&element=' + settings.elementValue
                         + '&port=' + settings.portValue
                         + '&object_list=' + settings.objectValue
                         + '&time_frame=' + settings.timeFrame ;
-        if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString)};
+        if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString);}
 
         $.ajax({url: requestString,
             dataType: 'json'},
