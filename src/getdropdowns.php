@@ -300,6 +300,45 @@ elseif ($query_type == "ranged_objects") {
                 
 }
 
+elseif ($query_type == "listNetworkDevice") {
+
+    $db = setupDB();
+
+    $sql = "select e.entity_id, e.display_name from entity e 
+            join entity_subtype es on es.entity_subtype_id = e.entity_subtype_id
+            where es.name = 'Network Device' 
+            order by es.name";
+            
+            
+    $result = $db->execQuery($sql);
+    foreach ($result as $row) {
+        $json[$row['ENTITY_ID']] = $row['DISPLAY_NAME'];
+    }
+    
+    
+    // Echo results as JSON
+    echo json_encode($json);
+}
+
+elseif ($query_type == "devicePort") {
+
+    $db = setupDB();
+    
+    // Only supports 1 network device for now
+    $sql = "select if_index, if_name 
+            from net_device_port_config pc 
+            where pc.entity_id = $elementList[0]";
+            
+    $result = $db->execQuery($sql);
+    foreach($result as $row) {
+            $json[$row['IF_INDEX']]
+                = $row['IF_NAME'];
+            }
+    
+    // Echo results as JSON
+    echo json_encode($json);
+}
+
 
 // Unsupported request
 else {
