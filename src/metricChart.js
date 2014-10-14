@@ -597,7 +597,7 @@
                 
                 })
             .fail (function(jqXHR, textStatus, errorThrown) {
-                errorMessage = 'HTTP Status Code ' + jqXHR.status;
+                errorMessage = textStatus + ' - ' + errorThrown;
                 displayError(errorMessage,requestString);
                 showEditPanel();
                 $("#closeSettings").button('reset');
