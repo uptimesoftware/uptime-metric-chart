@@ -117,7 +117,9 @@ if ($query_type == "elements_for_performance") {
             }
             if ($has_ppg)
             {
-                $json[$d['name']] = $d['id'];
+                $k = $d['name'];
+                $v = $d['id'];
+                $json[$k] = $v;
             }
         }
     }
@@ -189,7 +191,7 @@ elseif ($query_type == "monitors") {
     foreach ($result as $row) {
 
             $my_data_type_id = $row['DATA_TYPE_ID'];
-            if ($my_data_type_id == 2 or $my_data_type_id == 3 ) {              
+            if ($my_data_type_id == 2 or $my_data_type_id == 3 or $my_data_type_id == 6) {              
                 if ($row['UNITS'] == "") {
                     $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'];
                     $k = $row['NAME'] . " - " . $row['SHORT_DESC'];
@@ -261,7 +263,9 @@ elseif ($query_type == "views_for_monitor") {
         $result = $db->execQuery($sql);
         
         foreach ($result as $row) {
-            $json[$row['NAME']] = $row['ID'];
+            $k = $row['NAME'];
+            $v = $row['ID'];
+            $json[$k] = $v;
         }
     
     //sort alphabeticaly on name instead of their order on ID
@@ -291,8 +295,9 @@ elseif ($query_type == "ranged_objects") {
         $result = $db->execQuery($sql);
         
         foreach ($result as $row) {
-            $json[$row['INSTANCE_ID']. "-" . $row['ID']]
-             = $row['OBJECT_NAME'];
+            $v = $row['INSTANCE_ID']. "-" . $row['ID'];
+            $k = $row['OBJECT_NAME'];
+            $json[$k] = $v;
         }
     }
     // Echo results as JSON
@@ -331,8 +336,9 @@ elseif ($query_type == "devicePort") {
             
     $result = $db->execQuery($sql);
     foreach($result as $row) {
-            $json[$row['IF_NAME']]
-                = $row['IF_INDEX'];
+            $k = $row['IF_NAME'];
+            $v = $row['IF_INDEX'];
+            $json[$k] = $v;
             }
     
     // Echo results as JSON
