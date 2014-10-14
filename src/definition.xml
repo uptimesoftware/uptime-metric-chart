@@ -80,20 +80,20 @@
                       </div>
                       <div hidden id="service-monitor-div" style="margin-top: 12px">
                         <div id="service-monitor-metrics-div" style="margin-top: 12px" data-content="Monitor & Metric: Select the monitor and metric you would like to graph" data-placement="top" data-trigger="hover">
-                          <!--<span class="badge pull-right" id="service-monitor-metric-count" style="margin-top: 2px"></span>-->
+                          <!--<span class="badge pull-right" id="service-monitor-metrics-count" style="margin-top: 2px"></span>-->
                           <select class="service-monitor-metrics" id="service-monitor-metrics" data-placeholder="Select the Application or Custom Metric" tabindex="4" data-size="12" style="width: 98%">
                             <option value=""></option>
                           </select>
                         </div>
                         <div style="margin-top: 12px" id="service-monitor-elements-div" data-content="Element: Select the element and monitor instance for the metric above" data-placement="top" data-trigger="hover">
-                          <!--<span class="badge pull-right" id="service-monitor-element-count" style="margin-top: 2px"></span>-->
+                          <!--<span class="badge pull-right" id="service-monitor-elements-count" style="margin-top: 2px"></span>-->
                           <select class="service-monitor-elements" id="service-monitor-elements" data-placeholder="Select an Element & Monitor Instance" tabindex="5" data-size="12" style="width: 98%" multiple>
                             <option value=""></option>
                           </select>
                         </div>
 						
 						<div style="margin-top: 12px" id="service-monitor-ranged-div" data-content="Instance: Select the instance(s) for the ranged metric" data-placement="top" data-trigger="hover">
-                          <!--<span class="badge pull-right" id="service-monitor-ranged-count" style="margin-top: 2px"></span>-->
+                          <!--<span class="badge pull-right" id="service-monitor-rangeds-count" style="margin-top: 2px"></span>-->
                           <select class="service-monitor-ranged" id="service-monitor-ranged" data-placeholder="Select the instance(s)" tabindex="5" data-size="12" style="width: 98%" multiple>
                             <option value=""></option>
                           </select>
@@ -108,7 +108,7 @@
                           </select>
                           </div>
                         <div id="performance-elements-div" style="margin-top: 12px" data-content="Element: Select the element and monitor instance for the metric above" data-placement="top" data-trigger="hover">
-                          <!--<span class="badge pull-right" id="performance-element-count" style="margin-top: 2px"></span> -->
+                          <!--<span class="badge pull-right" id="performance-elements-count" style="margin-top: 2px"></span> -->
                           <select class="performance-elements" data-placeholder="Select an Element & Monitor Instance" id="performance-elements" tabindex="5" data-size="auto" style="width: 98%" multiple>
                             <option value=""></option>
                           </select>
@@ -123,14 +123,14 @@
 						  </select>
 						</div>
 						<div id="network-elements-div" style="margin-top: 12px" data-content="Element: Select the network device element for the metric above" data-placement="top" data-trigger="hover">
-							<!--<span class="badge pull-right" id="network-element-count" style="margin-top: 2px"></span>-->
+							<!--<span class="badge pull-right" id="network-elements-count" style="margin-top: 2px"></span>-->
 							<select class="network-elements" data-placeholder="Select a Network Device" id="network-elements" tabindex="5" data-size="auto" style="width: 98%">
 								<option value=""></option>
 							</select>
 						</div>
 						
 						<div id="network-ports-div" style="margin-top: 12px" data-content="Port: Select the port(s) for the network device above" data-placement="top" data-trigger="hover">
-                          <!--<span class="badge pull-right" id="network-port-count" style="margin-top: 2px"></span>-->
+                          <!--<span class="badge pull-right" id="network-ports-count" style="margin-top: 2px"></span>-->
                           <select class="network-ports" data-placeholder="Select a port(s)" id="network-ports" tabindex="5" data-size="auto" style="width: 98%" multiple>
                             <option value=""></option>
                           </select>
