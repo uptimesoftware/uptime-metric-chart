@@ -253,12 +253,21 @@ if ($query_type == "servicemonitor") {
 
 			if ($performanceData)
 			{
+				// Get Element Name
+				$sql_element_name = "Select display_name from entity e
+									 join erdc_instance ei on e.entity_id = ei.entity_id
+									 where erdc_instance_id = $erdc_instance_id";
+				
+				$result = $db->execQuery($sql_element_name);
+				$row = $result[0];
+				$element_name = $row['DISPLAY_NAME'];
+
 				// For ranged data, use the object name & element name in the series legend
 				$sql_object_name = "select object_name from ranged_object ro where ro.id = $ranged_object_id";
 
 				$result = $db->execQuery($sql_object_name);
 				$row = $result[0];
-				$element_name = $row['object_name'] . " - " . $element_name;
+				$element_name = $row['OBJECT_NAME'] . " - " . $element_name;
 
 
 				array_push($oneElement, $element_name);
