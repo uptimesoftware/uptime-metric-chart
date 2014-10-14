@@ -342,9 +342,6 @@
             }
             if ($("#chart-title-btn").hasClass('active')) {
                 settings.chartTitle = $('select.service-monitor-metrics option:selected').text();
-                /*settings.chartTitle = $('select.service-monitor-metrics option:selected').text() + ' for '
-                            + $('select.service-monitor-elements option:selected').text();
-                            */
             } else {
                 settings.chartTitle = "";
             }
@@ -356,9 +353,6 @@
             settings.elementValue = $("select.performance-elements").val();
             if ($("#chart-title-btn").hasClass('active')) {
                 settings.chartTitle = $('select.performance-metrics option:selected').text();
-                /*settings.chartTitle = $('select.performance-metrics option:selected').text() + ' for '
-                            + $('select.performance-elements option:selected').text();
-                            */
             } else {
                 settings.chartTitle = "";
             }
