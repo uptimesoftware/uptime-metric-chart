@@ -174,6 +174,8 @@ elseif ($query_type == "views_for_performance") {
 // Enumerate monitors   
 elseif ($query_type == "monitors") {
 
+     $element_ids = getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl );
+
     $db = setupDB();
 
 
@@ -184,6 +186,7 @@ elseif ($query_type == "monitors") {
             join erdc_parameter ep on ep.erdc_parameter_id = erp.erdc_parameter_id
             join erdc_instance ei on ec.id = ei.configuration_id
             where ei.entity_id is not null
+            and ei.entity_id in ($element_ids)
             order by name, description;
             ";
 
@@ -213,12 +216,15 @@ elseif ($query_type == "monitors") {
 //Enumerate elements and monitor instance namesand associate with a particular monitor
 elseif ($query_type == "elements_for_monitor") {
 
+    $element_ids = getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl );
+
     $db = setupDB();
     $sql = "select distinct e.entity_id, e.name, e.display_name, erp.ERDC_PARAMETER_ID as erdc_param, ei.erdc_instance_id as erdc_instance, ei.name monitor_name 
             from erdc_retained_parameter erp
             join erdc_instance ei on erp.CONFIGURATION_ID = ei.configuration_id
             join entity e on e.ENTITY_ID = ei.ENTITY_ID
-            where erp.ERDC_PARAMETER_ID = $erdc_parameter_id;
+            where erp.ERDC_PARAMETER_ID = $erdc_parameter_id
+            and ei.ENTITY_ID in ( $element_ids )
             ";
 
         $result = $db->execQuery($sql);
@@ -365,6 +371,22 @@ function setupDB()
         exit(1);
     }
 
+}
+
+//returns a string of all the elementIDs a user has permission to see according to the API.
+function getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl)
+{
+     // Create API object
+    $uptime_api = new uptimeApi($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl);
+
+    $elements = $uptime_api->getElements("isMonitored=1");
+    $element_ids = array();
+    foreach ($elements as $e)
+    {
+        array_push($element_ids, $e['id']);
+    }
+
+    return implode(", ", $element_ids);
 }
 
 
