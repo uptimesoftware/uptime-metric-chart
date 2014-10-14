@@ -313,17 +313,16 @@ elseif ($query_type == "ranged_objects") {
 
 elseif ($query_type == "listNetworkDevice") {
 
-    $db = setupDB();
 
-    $sql = "select e.entity_id, e.display_name from entity e 
-            join entity_subtype es on es.entity_subtype_id = e.entity_subtype_id
-            where es.name = 'Network Device' 
-            order by es.name";
+    // Create API object
+    $uptime_api = new uptimeApi($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl);
+
+    $elements = $uptime_api->getElements("type=NetworkDevice&isMonitored=1");
             
-            
-    $result = $db->execQuery($sql);
-    foreach ($result as $row) {
-        $json[$row['DISPLAY_NAME']] = $row['ENTITY_ID'];
+    foreach ($elements as $row) {
+        $k = $row['name'];
+        $v = $row['id'];
+        $json[$k] = $v;
     }
     
     
