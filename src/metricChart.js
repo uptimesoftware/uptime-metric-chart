@@ -105,26 +105,13 @@
             $("select.service-monitor-elements").chosen();
             $("select.service-monitor-ranged").chosen();
             
-            requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=monitors';
-            if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString);}
-            $.getJSON(requestString, function(data) {
-            }).done(function(data) {
-                if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Request succeeded!');}
-                $("select.service-monitor-metrics").empty();
-                $.each(data, function(key, val) {
-                    $("select.service-monitor-metrics").append('<option value="' + key + '">' + val + '</option>');
-                });
-                $("select.service-monitor-metrics").trigger("chosen:updated");
-                if (typeof metricValue !== 'undefined' && metricType == 'servicemonitor') {
-                    if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting service monitor metric droptown to: ' + metricValue);}
-                    $("select.service-monitor-metrics").val(metricValue).trigger("chosen:updated").trigger('change');
-                }
-                $("#service-monitor-metric-count").text($('#service-monitor-metrics option').length);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.log('Gadget #' + gadgetInstanceId + ' - Request failed! ' + textStatus);
-            }).always(function() {
-                // console.log('Request completed.');
-            });
+            my_params = Array();
+            my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=monitors';
+            my_params.dropdownID = "service-monitor-metrics";
+            if (typeof metricValue !== 'undefined') { my_params.secondaryValue = metricValue; } else { my_params.secondaryValue = undefined; }
+            if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+            updateDropDown(my_params);
+
         }
         else if ($('#performance-metrics-btn').is(':checked')) {
             if (settings.metricType !== 'performance'){

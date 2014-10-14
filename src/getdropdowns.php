@@ -191,13 +191,13 @@ elseif ($query_type == "monitors") {
             $my_data_type_id = $row['DATA_TYPE_ID'];
             if ($my_data_type_id == 2 or $my_data_type_id == 3 ) {              
                 if ($row['UNITS'] == "") {
-                    $k = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'];
-                    $v = $row['NAME'] . " - " . $row['SHORT_DESC'];
+                    $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'];
+                    $k = $row['NAME'] . " - " . $row['SHORT_DESC'];
                     $json[$k] = $v;
 
                 } else {
-                    $k = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'] ;
-                    $v = $row['NAME'] . " - " . $row['SHORT_DESC'] . " (" . $row['UNITS'] . ")";
+                    $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'] ;
+                    $k = $row['NAME'] . " - " . $row['SHORT_DESC'] . " (" . $row['UNITS'] . ")";
                     $json[$k] = $v;
                 }
             }
