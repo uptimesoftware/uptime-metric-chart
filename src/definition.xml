@@ -118,7 +118,7 @@
 					  <!--  Network Device Options -->
 					  <div hidden id="network-div">
 						<div id="network-metrics-div" style="margin-top: 12px" data-content="Metric: Select the network metric you would like to graph" data-placement="top" data-trigger="hover">
-						  <select class="network-metrics" data-placeholder="Select a Network Device Metric" id="network-metrics" tabindex="4" data-size="12" style="width: 98%">	
+						  <select class="network-metrics" data-placeholder="Select a Network Device Metric" id="network-metrics" tabindex="4" data-size="12" style="width: 98%" multiple>	
 							<option value=""></option>
 						  </select>
 						</div>
