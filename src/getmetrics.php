@@ -157,20 +157,22 @@ if ($query_type == "servicemonitor") {
 					   }
 				}
 				
-				
-				// Get Element Name
-				$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-				$result = $db->execQuery($sql_element_name);
-				$row = $result[0];
-				$element_name = $row['DISPLAY_NAME'];	
-				
+				if ($performanceData)
+				{
+					// Get Element Name
+					$sql_element_name = "Select display_name from entity where entity_id = $element_id";
+					$result = $db->execQuery($sql_element_name);
+					$row = $result[0];
+					$element_name = $row['DISPLAY_NAME'];	
+					
 
-				array_push($oneElement, $element_name);
-				array_push($oneElement, $performanceData);
-				array_push($json, $oneElement);
-				$oneElement = array();
-				$performanceData = array();
-				$i++;
+					array_push($oneElement, $element_name);
+					array_push($oneElement, $performanceData);
+					array_push($json, $oneElement);
+					$oneElement = array();
+					$performanceData = array();
+					$i++;
+				}
 			
 		
 	}
@@ -246,30 +248,26 @@ if ($query_type == "servicemonitor") {
 					   }
 					}
 			
-				// Get Element Name
-				$sql_element_name = "select display_name from entity e 
-										join erdc_instance ei on ei.entity_id = e.entity_id
-										where erdc_instance_id = $erdc_instance_id";
+
 				
-				$result = $db->execQuery($sql_element_name);
-				$row = $result[0];
-				$element_name = $row['DISPLAY_NAME'];
-				
+
+			if ($performanceData)
+			{
 				// For ranged data, use the object name & element name in the series legend
 				$sql_object_name = "select object_name from ranged_object ro where ro.id = $ranged_object_id";
 
 				$result = $db->execQuery($sql_object_name);
 				$row = $result[0];
 				$element_name = $row['object_name'] . " - " . $element_name;
-				
 
-			
-			array_push($oneElement, $element_name);
-			array_push($oneElement, $performanceData);
-			array_push($json, $oneElement);
-			$oneElement = array();
-			$performanceData = array();
-			$i++;
+
+				array_push($oneElement, $element_name);
+				array_push($oneElement, $performanceData);
+				array_push($json, $oneElement);
+				$oneElement = array();
+				$performanceData = array();
+				$i++;
+			}
 			
 		
 		}
@@ -406,18 +404,22 @@ elseif ($query_type == "performance") {
 				array_push($performanceData, $metric);
 				}
 			
-		// Get Element Name
-		$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-		$result = $db->execQuery($sql_element_name);
-		$row = $result[0];
-		$element_name = $row['DISPLAY_NAME'];			
 		
 		
 		
-		array_push($oneElement, $element_name);
-		array_push($oneElement, $performanceData);
-		//print_r($performanceData);
-		array_push($json, $oneElement);
+		
+		if ($performanceData)
+		{
+			// Get Element Name
+			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
+			$result = $db->execQuery($sql_element_name);
+			$row = $result[0];
+			$element_name = $row['DISPLAY_NAME'];
+
+			array_push($oneElement, $element_name);
+			array_push($oneElement, $performanceData);
+			array_push($json, $oneElement);
+		}
 		$oneElement = array();
 		$performanceData = array();
 	}
@@ -482,6 +484,11 @@ elseif ($query_type == "network") {
 				array_push($performanceData, $metric);
 			}
 			
+
+			
+		
+		if ($performanceData)
+		{
 			// Get Port Name
 			$sql_port_name = "Select if_name from net_device_port_config 
 								where entity_id = $elementList[0] 
@@ -489,12 +496,12 @@ elseif ($query_type == "network") {
 			$result = $db->execQuery($sql_port_name);
 			$row = $result[0];
 			$port_name = $row['IF_NAME'];
-			
-		
 
-		array_push($oneElement, $port_name);
-		array_push($oneElement, $performanceData);
-		array_push($json, $oneElement);
+
+			array_push($oneElement, $port_name);
+			array_push($oneElement, $performanceData);
+			array_push($json, $oneElement);
+		}
 		$oneElement = array();
 		$performanceData = array();
 		$i++;
@@ -511,7 +518,6 @@ elseif ($query_type == "network") {
 // Unsupported request
 else {
     echo "Error: Unsupported Request '$query_type'" . "</br>";
-    echo "Acceptable types are 'elements', 'monitors', and 'metrics'" . "</br>";
     }
 
 ?>
