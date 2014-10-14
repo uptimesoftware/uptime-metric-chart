@@ -209,6 +209,7 @@ elseif ($query_type == "monitors") {
 
     }
     // Echo results as JSON
+    ksort($json);
     echo json_encode($json);
 }
 
@@ -236,6 +237,7 @@ elseif ($query_type == "elements_for_monitor") {
             }
         
     // Echo results as JSON
+    ksort($json);
     echo json_encode($json);
 }
 
@@ -306,6 +308,8 @@ elseif ($query_type == "ranged_objects") {
             $json[$k] = $v;
         }
     }
+
+    ksort($json);
     // Echo results as JSON
     echo json_encode($json);
                 
@@ -325,7 +329,7 @@ elseif ($query_type == "listNetworkDevice") {
         $json[$k] = $v;
     }
     
-    
+    ksort($json);
     // Echo results as JSON
     echo json_encode($json);
 }
