@@ -7,6 +7,7 @@
     var myChart = null;
     var myChartDimensions = null;
     var renderSuccessful = null;  //Add this later
+    var metricType = null;
     var divsToDim = ['#widgetChart', '#widgetSettings'];
     var settings = {metricType: null, metricValue: null, elementValue: null,
             timeFrame: null, refreshInterval: null, chartType: null,
@@ -108,8 +109,8 @@
             my_params = Array();
             my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=monitors';
             my_params.dropdownID = "service-monitor-metrics";
-            if (typeof metricValue !== 'undefined') { my_params.secondaryValue = metricValue; } else { my_params.secondaryValue = undefined; }
-            if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+            if (typeof metricValue !== 'undefined') { my_params.savedValue = metricValue; } else { my_params.savedValue = undefined; }
+            my_params.targetmetricType = 'servicemonitor';
             updateDropDown(my_params);
 
         }
@@ -132,7 +133,7 @@
             
             if (typeof metricValue !== 'undefined' && metricType == 'performance') {
                 if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting performance monitor metric droptown to: ' + metricValue);}
-                $("select.performance-metrics").val(metricValue).trigger("chosen:updated").trigger('change');
+                //$("select.performance-metrics").val(metricValue).trigger("chosen:updated").trigger('change');
             } else {
                 $("select.performance-metrics").trigger("chosen:updated").trigger('change');
             }
@@ -167,7 +168,7 @@
             if (typeof metricValue !== 'undefined' && metricType == 'network') {
                 if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting network monitor metric droptown to: ' + metricValue);}
                 $("select.network-metrics").val(metricValue).trigger("chosen:updated").trigger('change');
-                $("select.network-ports").val(portValue).trigger("chosen:updated").trigger('change');
+                //$("select.network-ports").val(portValue).trigger("chosen:updated").trigger('change');
             } else {
                 $("select.network-metrics").trigger("chosen:updated").trigger('change');
             }
@@ -182,8 +183,8 @@
         my_params = Array();
         my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_monitor&monitor=' + $("select.service-monitor-metrics").val();
         my_params.dropdownID = "service-monitor-elements";
-        if (typeof elementValue !== 'undefined') { my_params.secondaryValue = elementValue; } else { my_params.secondaryValue = undefined; }
-        if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+        if (typeof elementValue !== 'undefined') { my_params.savedValue = elementValue; } else { my_params.savedValue = undefined; }
+        my_params.targetmetricType = 'servicemonitor';
         updateDropDown(my_params);
     });
         
@@ -210,8 +211,8 @@
                                    + $("select.service-monitor-elements").val()
                                    + '&object_list=' + $("select.service-monitor-ranged").val();
         my_params.dropdownID = "service-monitor-ranged";
-        if (typeof objectValue !== 'undefined') { my_params.secondaryValue = objectValue; } else { my_params.secondaryValue = undefined; }
-        if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+        if (typeof objectValue !== 'undefined') { my_params.savedValue = objectValue; } else { my_params.savedValue = undefined; }
+        my_params.targetmetricType = 'servicemonitor';
         updateDropDown(my_params);
     });
     
@@ -223,8 +224,8 @@
         my_params = Array();
         my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_performance';
         my_params.dropdownID = "performance-elements";
-        if (typeof elementValue !== 'undefined') { my_params.secondaryValue = elementValue; } else { my_params.secondaryValue = undefined; }
-        if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+        if (typeof elementValue !== 'undefined') { my_params.savedValue = elementValue; } else { my_params.savedValue = undefined; }
+        my_params.targetmetricType = 'performance';
         updateDropDown(my_params);
     });
     
@@ -248,8 +249,8 @@
         my_params = Array();
         my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=listNetworkDevice';
         my_params.dropdownID = "network-elements";
-        if (typeof elementValue !== 'undefined') { my_params.secondaryValue = elementValue; } else { my_params.secondaryValue = undefined; }
-        if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+        if (typeof elementValue !== 'undefined') { my_params.savedValue = elementValue; } else { my_params.savedValue = undefined; }
+        my_params.targetmetricType = 'network';
         updateDropDown(my_params);
     });
     
@@ -258,8 +259,8 @@
         my_params = Array();
         my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=devicePort' + '&element=' + $("select.network-elements").val();
         my_params.dropdownID = "network-ports";
-        if (typeof portValue !== 'undefined') {  my_params.secondaryValue = portValue; } else { my_params.secondaryValue = undefined; }
-        if (typeof metricType !== 'undefined') { my_params.metricType = metricType; } else { my_params.metricType = undefined; }
+        if (typeof portValue !== 'undefined') {  my_params.savedValue = portValue; } else { my_params.savedValue = undefined; }
+        my_params.targetmetricType = 'network';
         updateDropDown(my_params);
     });
 
@@ -288,13 +289,13 @@
     }
 
     //function to handle the repetitive tasks for updating dropdown based off of a requestString
-    //need pass all the params inside of an array to avoid errors about secondaryValue or metricType being undefined
+    //need pass all the params inside of an array to avoid errors about savedValue or metricType being undefined
     function updateDropDown (params )
     {
         dropdownID = params.dropdownID;
         requestString = params.requestString;
-        secondaryValue = params.secondaryValue;
-        metricType = params.metricType;
+        savedValue = params.savedValue;
+        targetmetricType = params.targetmetricType;
 
         //build our selectors based on the dropdownID
         dropdownSelector = "select." + dropdownID;
@@ -309,8 +310,11 @@
             $.each(data, function(key, val) {
                 $(dropdownSelector).append('<option value="' + val + '">' + key + '</option>');
             });
-            if (typeof secondaryValue !== undefined && metricType == 'servicemonitor') {
-                $(dropdownSelector).val(secondaryValue).trigger("chosen:updated").trigger('change');
+            if (typeof savedValue !== undefined && metricType != null) {
+                if (metricType == targetmetricType)
+                {
+                    $(dropdownSelector).val(savedValue).trigger("chosen:updated").trigger('change');
+                }
             } else {
                 $(dropdownSelector).trigger("chosen:updated").trigger('change');
             }
