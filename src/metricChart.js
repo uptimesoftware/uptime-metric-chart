@@ -133,7 +133,7 @@
             
             if (typeof metricValue !== 'undefined' && metricType == 'performance') {
                 if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting performance monitor metric droptown to: ' + metricValue);}
-                //$("select.performance-metrics").val(metricValue).trigger("chosen:updated").trigger('change');
+                $("select.performance-metrics").val(metricValue).trigger("chosen:updated").trigger('change');
             } else {
                 $("select.performance-metrics").trigger("chosen:updated").trigger('change');
             }
@@ -311,9 +311,14 @@
                 $(dropdownSelector).append('<option value="' + val + '">' + key + '</option>');
             });
             if (typeof savedValue !== undefined && metricType != null) {
+
                 if (metricType == targetmetricType)
                 {
                     $(dropdownSelector).val(savedValue).trigger("chosen:updated").trigger('change');
+                }
+                else
+                {
+                    $(dropdownSelector).trigger("chosen:updated").trigger('change');
                 }
             } else {
                 $(dropdownSelector).trigger("chosen:updated").trigger('change');
@@ -496,7 +501,7 @@
 
     function displayChart(settings) {
         if (myChart) {
-            myChart.stopTimer();
+            //myChart.stopTimer();
             myChart.destroy();
             myChart = null;
         }
@@ -512,6 +517,63 @@
         interval = setInterval(function() {
             renderChart(settings, renderSuccessful);
             }, settings.refreshInterval);
+    }
+
+    function getChartData(settings)
+    {
+        //build our request string from the contents of settings
+
+        requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
+                + '&monitor=' + settings.metricValue + '&element=' + settings.elementValue
+                + '&port=' + settings.portValue
+                + '&object_list=' + settings.objectValue
+                + '&time_frame=' + settings.timeFrame ;
+
+
+        $.ajax({url: requestString,
+            dataType: 'json'},
+            function(data) {})
+            .done (function( data ) {
+            
+                
+            
+                if (data.length < 1) {
+                    errorMessage = "There isn't enough monitoring data available for this metric and time period.";
+                    displayError(errorMessage,requestString);
+                    showEditPanel();
+                    $("#closeSettings").button('reset');
+                    $("#widgetBody").slideDown();
+                    $("#loading-div").hide('fade');
+                } else {
+                    if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Response: ' + JSON.stringify(data));}
+                                
+                    $.each(data, function(index, value) {
+
+                        myChart.addSeries({
+                            name: value[0],
+                            data: value[1]
+                        });
+
+                   });
+
+                   myChart.options.title.text = settings.chartTitle;
+
+                   myChart.render();
+                }
+                
+
+                 
+                
+                
+                })
+            .fail (function(jqXHR, textStatus, errorThrown) {
+                errorMessage = textStatus + ' - ' + errorThrown;
+                displayError(errorMessage,requestString);
+                showEditPanel();
+                $("#closeSettings").button('reset');
+                $("#loading-div").hide('fade');
+            });
+
     }
     
     function renderChart(settings) {
@@ -537,57 +599,18 @@
             plotOptions: {spline: {marker: {enabled: false}},
                     areaspline: {marker: {enabled: false}}},
             series: []};
-        requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
-                        + '&monitor=' + settings.metricValue + '&element=' + settings.elementValue
-                        + '&port=' + settings.portValue
-                        + '&object_list=' + settings.objectValue
-                        + '&time_frame=' + settings.timeFrame ;
+
+
+ 
         if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Requesting: ' + requestString);}
 
-        $.ajax({url: requestString,
-            dataType: 'json'},
-            function(data) {})
-            .done (function( data ) {
-            
-                
-            
-                if (data.length < 1) {
-                    errorMessage = "There isn't enough monitoring data available for this metric and time period.";
-                    displayError(errorMessage,requestString);
-                    showEditPanel();
-                    $("#closeSettings").button('reset');
-                    $("#widgetBody").slideDown();
-                    $("#loading-div").hide('fade');
-                } else {
-                    if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Response: ' + JSON.stringify(data));}
-                                
-                    $.each(data, function(index, value) {
-
-                    options.series.push({
-                        name: value[0],
-                        data: value[1]
-                    });
-
-                    options.title.text = settings.chartTitle;
-
-                    });
-                }
-                
-                var chart = new Highcharts.Chart(options);
+        myChart = new Highcharts.Chart(options);
                     $("#closeSettings").button('reset');
                     $("#loading-div").hide('fade');
                     $("#widgetSettings").slideUp();
                     $("#alertModal").modal('hide');
-                
-                
-                })
-            .fail (function(jqXHR, textStatus, errorThrown) {
-                errorMessage = textStatus + ' - ' + errorThrown;
-                displayError(errorMessage,requestString);
-                showEditPanel();
-                $("#closeSettings").button('reset');
-                $("#loading-div").hide('fade');
-            });
+
+        getChartData(settings);
     }
     
     function displayError(errorMessage,requestString) {
@@ -615,7 +638,7 @@
     function resizeGadget(dimensions) {
         myChartDimensions = toMyChartDimensions(dimensions);
         if (myChart) {
-            myChart.resize(myChartDimensions);
+            //myChart.resize(myChartDimensions);
         }
         $("#widgetChart").height($(window).height());
     }
