@@ -440,6 +440,9 @@ elseif ($query_type == "performance") {
 // Get network device metrics
 elseif ($query_type == "network") {
 	$i = 0;
+	$network_metrics = explode(",", $performance_monitor);
+	$network_perf_data = array();
+
 	foreach($ports as $singlePort) {
 
 		if ($db->dbType == "mysql"){
@@ -482,44 +485,81 @@ elseif ($query_type == "network") {
 			foreach ($result as $row) {
 				$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 				$x = $sample_time * 1000;
-				if(preg_match("/kbps/",$performance_monitor)) {
+				foreach ($network_metrics as $network_metric)
+				{
+					if(preg_match("/kbps/",$network_metric)) {
 
-					$y = (float)$row[strtoupper("$performance_monitor")] / 1024;
+						$y = (float)$row[strtoupper("$network_metric")] / 1024;
+					}
+					else {
+						$y = (float)$row[strtoupper("$network_metric")];
+					}
+
+
+					$metric = array($x, $y);
+					$metric_name = $network_metric . "-" . $singlePort . "-" . $elementList[0];
+
+
+					if (array_key_exists($metric_name, $network_perf_data))
+					{
+						
+						array_push($network_perf_data[$metric_name], $metric);
+					}
+					else
+					{
+
+						$network_perf_data[$metric_name] = array();
+						array_push($network_perf_data[$metric_name], $metric);
+					}
+					
+
+
+					
 				}
-				else {
-					$y = (float)$row[strtoupper("$performance_monitor")];
-				}
-				$metric = array($x, $y);
-				array_push($performanceData, $metric);
+
+
 			}
-			
 
-			
-		
-		if ($performanceData)
+	}
+
+		//re-arrange the $network_perf_data array into timeseries data
+		//also put together a name for each series
+		foreach ($network_perf_data as $network_metric_key => $network_metric_val)
 		{
-			// Get Port Name
+			
+			$key_exploded = explode("-", $network_metric_key);
+			$my_metric_name = $key_exploded[0];
+			$my_port = $key_exploded[1];
+			$my_entity_id = $key_exploded[2];
+
+			//trim out kbps if it's in the metric_name
+			if(preg_match("/kbps/", $my_metric_name))
+			{
+				$my_metric_name = substr($my_metric_name, 5);
+			}
+
+			//get port name
 			$sql_port_name = "Select if_name from net_device_port_config 
-								where entity_id = $elementList[0] 
-								and if_index = $singlePort";
+								where entity_id = $my_entity_id 
+								and if_index = $my_port";
 			$result = $db->execQuery($sql_port_name);
 			$row = $result[0];
-			$port_name = $row['IF_NAME'];
+			$series_name = $row['IF_NAME'] . " - " . $my_metric_name;
+
+			$my_temp_array = array();
+
+			array_push($my_temp_array, $series_name);
+			array_push($my_temp_array, $network_metric_val);
+
+			array_push($json, $my_temp_array);
 
 
-			array_push($oneElement, $port_name);
-			array_push($oneElement, $performanceData);
-			array_push($json, $oneElement);
 		}
-		$oneElement = array();
-		$performanceData = array();
-		$i++;
-	
-		
-	}
+			
+
+
     // Echo results as JSON
     echo json_encode($json);
-	
 
 }
 
