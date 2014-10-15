@@ -323,8 +323,8 @@
     }
     
     function showEditPanel() {
-        if (myChart) {
-            myChart.stopTimer();
+        if (interval) {
+            clearInterval(interval);
         }
         $("#widgetBody").slideDown(function() {
             $("#widgetSettings").slideDown();
