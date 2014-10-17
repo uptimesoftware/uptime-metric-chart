@@ -427,7 +427,7 @@
 
         //in case people are upgrading from an earlier version
         // where you couldn't toggle the legend, we'll set this to true if undefined 
-        if (typeof settings.showLegend != undefined)
+        if (typeof settings.showLegend !== undefined)
         {
             showLegend = settings.showLegend;
         }
@@ -605,6 +605,11 @@
         $("#widgetBody").slideUp();
         $("#loading-div").show('fade');
         
+        if (typeof settings.showLegend === "undefined")
+        {
+            settings.showLegend = true;
+        }
+
         var options = {
             chart: {renderTo: 'widgetChart',
                 defaultSeriesType: settings.chartType,
