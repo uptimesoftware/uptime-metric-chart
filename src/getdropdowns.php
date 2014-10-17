@@ -104,7 +104,7 @@ if ($query_type == "elements_for_performance") {
     $elements = $uptime_api->getElements("type=Server&isMonitored=1");
 
     foreach ($elements as $d) {
-        if ($d['typeSubtype'] != "VcenterHostSystem")
+        if (!preg_match("/Vcenter/", $d['typeSubtype'] ))
         {
             $has_ppg = False;
             foreach($d['monitors'] as $monitor)

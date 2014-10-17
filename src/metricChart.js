@@ -220,7 +220,7 @@
     
     
     // Performance metric changed
-    $("select.performance-metrics").on('change', function(evt, params) {
+    $("#performance-metrics-btn").on('change', function(evt, params) {
         my_params = Array();
         my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=elements_for_performance';
         my_params.dropdownID = "performance-elements";
@@ -245,7 +245,7 @@
     
     
     // Network metric changed
-    $("select.network-metrics").on('change', function(evt, params) {
+    $("#network-metrics-btn").on('change', function(evt, params) {
         my_params = Array();
         my_params.requestString = getDropDownsPath + '?uptime_offest=' + uptimeOffset + '&query_type=listNetworkDevice';
         my_params.dropdownID = "network-elements";
