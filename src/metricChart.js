@@ -380,6 +380,14 @@
             }
             settings.seriesTitle = $('select.network-metrics option:selected').text();
         }
+
+        if ($("#toggle-legend-btn").hasClass('active')) {
+            settings.showLegend = true;
+        }
+        else
+        {
+            settings.showLegend = false;
+        }
         
         
         timeFrameIndex = $("#timeFrameSlider").slider("value");
@@ -416,6 +424,18 @@
         timeFrame = settings.timeFrame;
         refreshInterval = settings.refreshInterval;
         chartTitle = settings.chartTitle;
+
+        //in case people are upgrading from an earlier version
+        // where you couldn't toggle the legend, we'll set this to true if undefined 
+        if (typeof settings.showLegend != undefined)
+        {
+            showLegend = settings.showLegend;
+        }
+        else
+        {
+            settings.showLegend = true;
+            showLegend = true;
+        }
         
         if (metricType == "servicemonitor") {
             if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Setting metric type to: ' + metricType);}
@@ -431,6 +451,10 @@
         }
         if (chartTitle === "") {
             $("#chart-title-btn").removeClass('active');
+        }
+        if (showLegend === false)
+        {
+            $("#toggle-legend-btn").removeClass('active');
         }
     }
     
@@ -598,7 +622,10 @@
                     text: ""}},
             plotOptions: {spline: {marker: {enabled: false}},
                     areaspline: {marker: {enabled: false}}},
-            series: []};
+            series: [],
+            legend: {
+                enabled: settings.showLegend
+            }};
 
 
  

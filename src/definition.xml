@@ -178,6 +178,11 @@
 			    </label>
 			  </div>
 			</div>
+            <div class="pull-left" style="margin-left: 37px; " id="toggle-legend-div">
+              <button type="button" class="btn btn-default btn-xs active" id="toggle-legend-btn" data-toggle="button" data-content="Chart Legend: Should we show it?" data-placement="top" data-trigger="hover">
+                <strong>Legend</strong>
+              </button>
+            </div>
 			<div class="pull-left" style="margin-left: 37px; " id="chart-title-div">
 			  <button type="button" class="btn btn-default btn-xs active" id="chart-title-btn" data-toggle="button" data-content="Chart Title: Should we show it?" data-placement="top" data-trigger="hover">
 			    <strong>Title</strong>
