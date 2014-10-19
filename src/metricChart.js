@@ -539,36 +539,46 @@
         renderChart(settings);
         clearInterval(interval);
         interval = setInterval(function() {
-            renderChart(settings, renderSuccessful);
+            getChartData(settings, false);
             }, settings.refreshInterval);
     }
 
-    function getChartData(settings)
+    function getChartData(settings, initialLoad)
     {
         //build our request string from the contents of settings
-
-        requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
+        if (initialLoad)
+        {
+            requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
                 + '&monitor=' + settings.metricValue + '&element=' + settings.elementValue
                 + '&port=' + settings.portValue
                 + '&object_list=' + settings.objectValue
                 + '&time_frame=' + settings.timeFrame ;
-
+        }
+        else
+        {
+            console.log('refreshing');
+            timeFrame = settings.refreshInterval / 1000;
+            requestString = getMetricsPath + '?uptime_offest=' + uptimeOffset + '&query_type=' + settings.metricType
+                + '&monitor=' + settings.metricValue + '&element=' + settings.elementValue
+                + '&port=' + settings.portValue
+                + '&object_list=' + settings.objectValue
+                + '&time_frame=' + timeFrame ;
+        }
 
         $.ajax({url: requestString,
             dataType: 'json'},
             function(data) {})
             .done (function( data ) {
             
-                
-            
-                if (data.length < 1) {
+                if (data.length < 1 && initialLoad === true) {
                     errorMessage = "There isn't enough monitoring data available for this metric and time period.";
                     displayError(errorMessage,requestString);
                     showEditPanel();
                     $("#closeSettings").button('reset');
                     $("#widgetBody").slideDown();
                     $("#loading-div").hide('fade');
-                } else {
+                } else if ( initialLoad === true) {
+                    //first time loading series
                     if (debugMode) {console.log('Gadget #' + gadgetInstanceId + ' - Response: ' + JSON.stringify(data));}
                                 
                     $.each(data, function(index, value) {
@@ -583,6 +593,22 @@
                    myChart.options.title.text = settings.chartTitle;
 
                    myChart.render();
+                } else if ( initialLoad === false) {
+                    //adding new points to the existing series
+                    $.each(data, function(index,value) {
+                        console.log(value[0] + " - " + value[1]);
+                        $.each(myChart.series,function(index, myseries) {
+                            
+                            if ( myseries.name == value[0])
+                            {
+                                console.log("Series Matched: " + value[0]);
+                                $.each(value[1], function(index,point) {
+                                    myseries.addPoint(point, false, true);
+                                });
+                            }
+                        });
+                    });
+                    myChart.redraw();
                 }
                 
 
@@ -642,7 +668,7 @@
                     $("#widgetSettings").slideUp();
                     $("#alertModal").modal('hide');
 
-        getChartData(settings);
+        getChartData(settings, true);
     }
     
     function displayError(errorMessage,requestString) {
