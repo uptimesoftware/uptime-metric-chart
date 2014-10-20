@@ -697,7 +697,7 @@
     function resizeGadget(dimensions) {
         myChartDimensions = toMyChartDimensions(dimensions);
         if (myChart) {
-            //myChart.resize(myChartDimensions);
+            myChart.setSize(myChartDimensions.width, myChartDimensions.height);
         }
         $("#widgetChart").height($(window).height());
     }
