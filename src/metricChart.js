@@ -605,6 +605,7 @@
                                 $.each(value[1], function(index,point) {
                                     myseries.addPoint(point, false, true);
                                 });
+                                return false;//break from the each loop
                             }
                         });
                     });
