@@ -299,8 +299,6 @@
 
         //build our selectors based on the dropdownID
         dropdownSelector = "select." + dropdownID;
-        countSelector = "#" + dropdownID + "-count";
-        optionSelector = "#" + dropdownID + " option";
 
         $(dropdownSelector).empty();
         $(dropdownSelector).trigger("chosen:updated");
@@ -323,7 +321,7 @@
             } else {
                 $(dropdownSelector).trigger("chosen:updated").trigger('change');
             }
-            $(countSelector).text($(optionSelector).size());
+            
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log('Gadget #' + gadgetInstanceId + ' - Request failed! ' + textStatus);
         }).always(function() {
