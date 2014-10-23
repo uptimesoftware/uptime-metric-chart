@@ -178,6 +178,26 @@ if ($query_type == "servicemonitor") {
 	}
 }
 	elseif ($data_type_id == 6) {
+
+		//get a look-up of object_names based on the erdc_id to use in the loop below
+		$my_exploded_string = explode("-", $elementList[0]);
+		$erdc_instance_id = $my_exploded_string[1];
+
+
+		$sql_object_name = "select id, object_name 
+                from ranged_object ro
+                where ro.instance_id = $erdc_instance_id               
+                ";
+
+		$object_name_results = $db->execQuery($sql_object_name);
+		$object_names = array();
+		foreach ($object_name_results as $obj )
+		{
+			$obj_id = $obj['ID'];
+			$obj_name = $obj['OBJECT_NAME'];
+			$object_names[$obj_id] = $obj_name;
+		}
+
 		
 		foreach($objectList as $single_ranged_object) {
 			
@@ -245,29 +265,17 @@ if ($query_type == "servicemonitor") {
 						$y = (float)$row['VALUE'];
 						$metric = array($x, $y);
 						array_push($performanceData, $metric);
-					   }
 					}
+				}
 			
 
 				
 
 			if ($performanceData)
 			{
-				// Get Element Name
-				$sql_element_name = "Select display_name from entity e
-									 join erdc_instance ei on e.entity_id = ei.entity_id
-									 where erdc_instance_id = $erdc_instance_id";
-				
-				$result = $db->execQuery($sql_element_name);
-				$row = $result[0];
-				$element_name = $row['DISPLAY_NAME'];
 
-				// For ranged data, use the object name & element name in the series legend
-				$sql_object_name = "select object_name from ranged_object ro where ro.id = $ranged_object_id";
-
-				$result = $db->execQuery($sql_object_name);
-				$row = $result[0];
-				$element_name = $row['OBJECT_NAME'] . " - " . $element_name;
+		
+				$element_name = $object_names[$ranged_object_id];
 
 
 				array_push($oneElement, $element_name);
