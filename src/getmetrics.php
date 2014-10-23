@@ -65,13 +65,32 @@ else
  exit(1);
 }
 
+
+
 	
 //Enumerate metrics for specific monitor/element instance
 if ($query_type == "servicemonitor") {
-    
+
+
 	//$elementList is an array where each item is elementID-erdcID 	
-	$i = 0;
 	if (($data_type_id == 2) ||($data_type_id == 3)) {
+
+		// Get Element Names to use as a look-up later
+		$element_id_string = "";
+		$element_ids = array();
+		foreach ($elementList as $element_id_and_erdc_id) {
+			$ids = explode("-", $element_id_and_erdc_id);
+			array_push($element_ids, $ids[0]);
+		}
+		$element_id_string = implode(", ", $element_ids);
+		$sql_element_name = "Select entity_id, display_name from entity where entity_id in ( $element_id_string )";
+		$result = $db->execQuery($sql_element_name);
+		$element_names = array();
+		foreach ($result as $row) {
+			$element_names[$row['ENTITY_ID']] = $row['DISPLAY_NAME'];
+		}
+
+
 		foreach ($elementList as $element_id_and_erdc_id) {
 		
 			$ids = explode("-", $element_id_and_erdc_id);
@@ -159,14 +178,10 @@ if ($query_type == "servicemonitor") {
 				
 				if ($performanceData)
 				{
-					// Get Element Name
-					$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-					$result = $db->execQuery($sql_element_name);
-					$row = $result[0];
-					$element_name = $row['DISPLAY_NAME'];	
-					
+	
+					$series_name = $element_names[$element_id];				
 
-					array_push($oneElement, $element_name);
+					array_push($oneElement, $series_name);
 					array_push($oneElement, $performanceData);
 					array_push($json, $oneElement);
 					$oneElement = array();
@@ -198,7 +213,7 @@ if ($query_type == "servicemonitor") {
 			$object_names[$obj_id] = $obj_name;
 		}
 
-		
+		//now we'll get the perf data for each object_id
 		foreach($objectList as $single_ranged_object) {
 			
 			$element_and_ranged = explode("-",$single_ranged_object);
@@ -296,6 +311,17 @@ if ($query_type == "servicemonitor") {
 
 // Get performance metrics
 elseif ($query_type == "performance") {
+
+	// Get Element Names to use as a look-up later
+	$element_id_string = implode(", ", $elementList);
+	$sql_element_name = "Select entity_id, display_name from entity where entity_id in ( $element_id_string )";
+	$result = $db->execQuery($sql_element_name);
+	$element_names = array();
+	foreach ($result as $row) {
+		$element_names[$row['ENTITY_ID']] = $row['DISPLAY_NAME'];
+	}
+
+
 
 	foreach ($elementList as $element_id) {
 
@@ -427,11 +453,7 @@ elseif ($query_type == "performance") {
 		
 		if ($performanceData)
 		{
-			// Get Element Name
-			$sql_element_name = "Select display_name from entity where entity_id = $element_id";
-			$result = $db->execQuery($sql_element_name);
-			$row = $result[0];
-			$element_name = $row['DISPLAY_NAME'];
+			$element_name = $element_names[$element_id];
 
 			array_push($oneElement, $element_name);
 			array_push($oneElement, $performanceData);
@@ -447,7 +469,18 @@ elseif ($query_type == "performance") {
 
 // Get network device metrics
 elseif ($query_type == "network") {
-	$i = 0;
+
+	//make a look-up of port names
+	$element_id = $elementList[0];
+	$port_names = array();
+	$sql_port_names = "Select if_name, if_index from net_device_port_config 
+						where entity_id = $element_id";
+	$result = $db->execQuery($sql_port_names);
+	foreach ($result as $row) {
+		$port_names[$row['IF_INDEX']] = $row['IF_NAME'];
+	}
+
+
 	$network_metrics = explode(",", $performance_monitor);
 	$network_perf_data = array();
 
@@ -546,13 +579,7 @@ elseif ($query_type == "network") {
 				$my_metric_name = substr($my_metric_name, 5);
 			}
 
-			//get port name
-			$sql_port_name = "Select if_name from net_device_port_config 
-								where entity_id = $my_entity_id 
-								and if_index = $my_port";
-			$result = $db->execQuery($sql_port_name);
-			$row = $result[0];
-			$series_name = $row['IF_NAME'] . " - " . $my_metric_name;
+			$series_name = $port_names[$singlePort] . " - " . $my_metric_name;
 
 			$my_temp_array = array();
 
