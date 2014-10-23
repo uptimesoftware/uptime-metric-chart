@@ -490,8 +490,8 @@ elseif ($query_type == "network") {
 		$sql = "select * from net_device_perf_port pp 
 				join net_device_port_config pc on pp.if_index = pc.if_index 
 				join net_device_perf_sample ps on ps.id = pp.sample_id
-				where pc.entity_id = $elementList[0] 
-				and ps.entity_id = $elementList[0] 
+				where pc.entity_id = $element_id
+				and ps.entity_id = $element_id 
 				and	pp.if_index = $singlePort
 				and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)		  
 				order by ps.sample_time";
@@ -500,8 +500,8 @@ elseif ($query_type == "network") {
 			$sql = "select * from net_device_perf_port pp 
 				join net_device_port_config pc on pp.if_index = pc.if_index 
 				join net_device_perf_sample ps on ps.id = pp.sample_id
-				where pc.entity_id = $elementList[0] 
-				and ps.entity_id = $elementList[0] 
+				where pc.entity_id = $element_id
+				and ps.entity_id = $element_id 
 				and	pp.if_index = $singlePort
 				and ps.sample_time > sysdate - interval  '". $time_frame . "' second 		  
 				order by ps.sample_time";
@@ -512,8 +512,8 @@ elseif ($query_type == "network") {
 			$sql = "select * from net_device_perf_port pp 
 				join net_device_port_config pc on pp.if_index = pc.if_index 
 				join net_device_perf_sample ps on ps.id = pp.sample_id
-				where pc.entity_id = $elementList[0] 
-				and ps.entity_id = $elementList[0] 
+				where pc.entity_id = $element_id 
+				and ps.entity_id = $element_id 
 				and	pp.if_index = $singlePort
 				and ps.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
 				order by ps.sample_time";
