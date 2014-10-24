@@ -88,9 +88,6 @@
     
     // Metric type changed
     $("#metric-type-radio").on('change', function(evt, params) {
-        $('div.container').css('overflowY', 'auto');
-        $("div.container").css('overflowX', 'hidden');
-        $("div.container").css('height',document.documentElement.clientHeight);
 
         
         
@@ -695,9 +692,10 @@
     function resizeGadget(dimensions) {
         myChartDimensions = toMyChartDimensions(dimensions);
         if (myChart) {
-            //myChart.resize(myChartDimensions);
+            myChart.setSize(myChartDimensions.width, myChartDimensions.height);
         }
-        $("#widgetChart").height($(window).height());
+        $("body").height($(window).height());
+
     }
     function toMyChartDimensions(dimensions) {
         return new UPTIME.pub.gadgets.Dimensions(Math.max(100, dimensions.width - 5), Math.max(100, dimensions.height));
