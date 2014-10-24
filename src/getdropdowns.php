@@ -174,36 +174,37 @@ elseif ($query_type == "views_for_performance") {
 // Enumerate monitors   
 elseif ($query_type == "monitors") {
 
-     $element_ids = getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl );
+    $element_ids = getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_api_hostname, $uptime_api_port, $uptime_api_version, $uptime_api_ssl );
 
     $db = setupDB();
 
 
-    $sql = "select distinct erp.ERDC_PARAMETER_ID as erdc_param, eb.name, ep.short_description as short_desc, ep.parameter_type, ep.units, ep.data_type_id, description
+    $sql = "select distinct erp.ERDC_PARAMETER_ID as erdc_param, eb.name, ep.short_description as short_desc, ep.parameter_type, ep.units, ep.data_type_id, description, ei.entity_id
             from erdc_retained_parameter erp
             join erdc_configuration ec on erp.configuration_id = ec.id
             join erdc_base eb on ec.erdc_base_id = eb.erdc_base_id
             join erdc_parameter ep on ep.erdc_parameter_id = erp.erdc_parameter_id
             join erdc_instance ei on ec.id = ei.configuration_id
             where ei.entity_id is not null
-            and ei.entity_id in ($element_ids)
             order by name, description;
             ";
 
     $result = $db->execQuery($sql);
     foreach ($result as $row) {
+            if ( in_array($row['ENTITY_ID'] , $element_ids ) )
+            {
+                $my_data_type_id = $row['DATA_TYPE_ID'];
+                if ($my_data_type_id == 2 or $my_data_type_id == 3 or $my_data_type_id == 6) {              
+                    if ($row['UNITS'] == "") {
+                        $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'];
+                        $k = $row['NAME'] . " - " . $row['SHORT_DESC'];
+                        $json[$k] = $v;
 
-            $my_data_type_id = $row['DATA_TYPE_ID'];
-            if ($my_data_type_id == 2 or $my_data_type_id == 3 or $my_data_type_id == 6) {              
-                if ($row['UNITS'] == "") {
-                    $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'];
-                    $k = $row['NAME'] . " - " . $row['SHORT_DESC'];
-                    $json[$k] = $v;
-
-                } else {
-                    $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'] ;
-                    $k = $row['NAME'] . " - " . $row['SHORT_DESC'] . " (" . $row['UNITS'] . ")";
-                    $json[$k] = $v;
+                    } else {
+                        $v = $row['ERDC_PARAM'] . "-" . $row['DATA_TYPE_ID'] ;
+                        $k = $row['NAME'] . " - " . $row['SHORT_DESC'] . " (" . $row['UNITS'] . ")";
+                        $json[$k] = $v;
+                    }
                 }
             }
 
@@ -225,16 +226,18 @@ elseif ($query_type == "elements_for_monitor") {
             join erdc_instance ei on erp.CONFIGURATION_ID = ei.configuration_id
             join entity e on e.ENTITY_ID = ei.ENTITY_ID
             where erp.ERDC_PARAMETER_ID = $erdc_parameter_id
-            and ei.ENTITY_ID in ( $element_ids )
             ";
 
         $result = $db->execQuery($sql);
         
         foreach ($result as $row) {
-            $v = $row['ENTITY_ID'] . "-" . $row['ERDC_INSTANCE'];
-            $k = $row['DISPLAY_NAME'] . " - " . $row['MONITOR_NAME'];
-            $json[$k] = $v;
+            if ( in_array($row['ENTITY_ID'] , $element_ids ) )
+            {
+                $v = $row['ENTITY_ID'] . "-" . $row['ERDC_INSTANCE'];
+                $k = $row['DISPLAY_NAME'] . " - " . $row['MONITOR_NAME'];
+                $json[$k] = $v;
             }
+        }
         
     // Echo results as JSON
     ksort($json);
@@ -288,7 +291,7 @@ elseif ($query_type == "ranged_objects") {
     
     $db = setupDB();
 
-    $i = 0;
+
     foreach ($elementList as $element_id_and_erdc_id) {
         $ids = explode("-", $element_id_and_erdc_id);
         $element_id = $ids[0];
@@ -389,7 +392,7 @@ function getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_
         array_push($element_ids, $e['id']);
     }
 
-    return implode(", ", $element_ids);
+    return $element_ids;
 }
 
 
