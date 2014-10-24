@@ -29,9 +29,8 @@
 	  <head>
 	    <title>Metric Chart</title>
 	    <meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	    <meta name="description" content="Metric Chart Gadget">
-	    <meta name="author" content="Lubomyr Salamakha, uptime Solutions Architect">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/bootstrap/dist/css/bootstrap.css">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/chosen/chosen.css">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/bootstrap/dist/css/bootstrap-theme.css">
@@ -43,8 +42,8 @@
 	      <script src="__UPTIME_GADGET_BASE__/deltas/bootstrap/assets/js/html5shiv.js"></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/bootstrap/assets/js/respond.min.js"></script>
 	    <![endif]-->
-            </head>
-            <body>
+      </head>
+    <body>
               <div class="container" style="max-width: 100%; max-height: 95%">
                 <div class="row">
                   <!--div style="width: 490px; margin-top: 12px; margin-left: 12px;" class="panel panel-default" id="widgetSettings"-->
@@ -231,7 +230,7 @@
 	      <script src="__UPTIME_GADGET_BASE__/deltas/chosen/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/highcharts/js/highcharts.js" type="text/javascript" ></script>
 	      <script id="ownScript" src="__UPTIME_GADGET_BASE__/metricChart.js?29" type="text/javascript" charset="utf-8"></script>
-            </body>
+        </body>
 	</html>
 	]]>
     </Content>
