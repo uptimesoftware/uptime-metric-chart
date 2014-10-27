@@ -181,6 +181,7 @@
 			  <button type="button" class="btn btn-default btn-xs active" id="chart-title-btn" data-toggle="button" data-content="Chart Title: Should we show it?" data-placement="top" data-trigger="hover">
 			    <strong>Title</strong>
 			  </button>
+			  <input type="text" name"custom-chart-title" id="custom-chart-title" value="Custom Title"></input>
 			</div>
                       </div>
 		    </div>
