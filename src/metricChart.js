@@ -613,11 +613,14 @@
                 
                 })
             .fail (function(jqXHR, textStatus, errorThrown) {
-                errorMessage = textStatus + ' - ' + errorThrown;
-                displayError(errorMessage,requestString);
-                showEditPanel();
-                $("#closeSettings").button('reset');
-                $("#loading-div").hide('fade');
+                //only display errors during the initial Load
+                if (initialLoad === true) {
+                    errorMessage = textStatus + ' - ' + errorThrown;
+                    displayError(errorMessage,requestString);
+                    showEditPanel();
+                    $("#closeSettings").button('reset');
+                    $("#loading-div").hide('fade');
+                }
             });
 
     }
