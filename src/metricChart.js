@@ -38,6 +38,7 @@
     // Initialize handlers
     uptimeGadget.registerOnEditHandler(showEditPanel);
     uptimeGadget.registerOnLoadHandler(function(onLoadData) {
+        myChartDimensions = toMyChartDimensions(onLoadData.dimensions);
         if (onLoadData.hasPreloadedSettings()) {
             goodLoad(onLoadData.settings);
         } else {
@@ -587,7 +588,7 @@
 
                    myChart.options.title.text = settings.chartTitle;
 
-                   myChart.render();
+                   myChart.redraw();
                 } else if ( initialLoad === false) {
                     //adding new points to the existing series
                     $.each(data, function(index,value) {
@@ -645,11 +646,13 @@
             title: {text: ""},
             credits: {enabled: false},
             xAxis: {type: 'datetime',
-                title: {enabled: true,
-                    text: ""}},
+                    title: {enabled: true,
+                            text: ""}
+                    },
             yAxis: {min: 0,
-                title: {enabled: false,
-                    text: ""}},
+                    title: {enabled: false,
+                            text: ""}
+                    },
             plotOptions: {spline: {marker: {enabled: false}},
                     areaspline: {marker: {enabled: false}}},
             series: [],

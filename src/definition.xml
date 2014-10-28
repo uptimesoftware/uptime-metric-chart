@@ -29,7 +29,7 @@
 	  <head>
 	    <title>Metric Chart</title>
 	    <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	    <meta name="description" content="Metric Chart Gadget">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/bootstrap/dist/css/bootstrap.css">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/chosen/chosen.css">
@@ -37,11 +37,8 @@
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/bootstrap/dist/css/bootstrap-multiselect.css">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/deltas/jquery/themes/custom/jquery-ui-1.10.3.custom.css">
 	    <link rel="stylesheet" type="text/css" href="__UPTIME_GADGET_BASE__/custom.css">
-	    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	    <!--[if lt IE 9]>
-	      <script src="__UPTIME_GADGET_BASE__/deltas/bootstrap/assets/js/html5shiv.js"></script>
-	      <script src="__UPTIME_GADGET_BASE__/deltas/bootstrap/assets/js/respond.min.js"></script>
-	    <![endif]-->
+
+	    #includeResources(jquery,highcharts)
       </head>
     <body>
               <div class="container" style="max-width: 100%; max-height: 95%">
@@ -217,13 +214,11 @@
                 </div>
               </div>
 	    
-	      <script src="__UPTIME_GADGET_BASE__/deltas/jquery/jquery-2.0.3.min.js" type="text/javascript" ></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/jquery/ui/custom/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/bootstrap/dist/js/bootstrap.js"></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/bootstrap/dist/js/bootstrap-multiselect.js"></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/chosen/chosen.jquery.js" type="text/javascript"></script>
 	      <script src="__UPTIME_GADGET_BASE__/deltas/chosen/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
-	      <script src="__UPTIME_GADGET_BASE__/deltas/highcharts/js/highcharts.js" type="text/javascript" ></script>
 	      <script id="ownScript" src="__UPTIME_GADGET_BASE__/metricChart.js?29" type="text/javascript" charset="utf-8"></script>
         </body>
 	</html>
