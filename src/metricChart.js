@@ -657,7 +657,7 @@
                     fontSize: '9px'},
                 spacingTop: 10,
                 spacingBottom: 10},
-            title: {text: ""},
+            title: {text: settings.chartTitle},
             credits: {enabled: false},
             xAxis: {type: 'datetime',
                     title: {enabled: true,
