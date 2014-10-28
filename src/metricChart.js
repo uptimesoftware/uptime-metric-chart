@@ -562,6 +562,7 @@
         }
 
         $.ajax({url: requestString,
+            cache: false,
             dataType: 'json'},
             function(data) {})
             .done (function( data ) {
