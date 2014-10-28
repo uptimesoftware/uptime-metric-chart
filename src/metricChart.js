@@ -345,22 +345,18 @@
             if ($("select.service-monitor-metrics").val().slice(-1) == "6") {
                 settings.objectValue = $("select.service-monitor-ranged").val();
             }
-            if ($("#chart-title-btn").hasClass('active')) {
-                settings.chartTitle = $('select.service-monitor-metrics option:selected').text();
-            } else {
-                settings.chartTitle = "";
-            }
+            
+            defaultTitle = $('select.service-monitor-metrics option:selected').text();
+
             settings.seriesTitle = $('select.service-monitor-metrics option:selected').text();
         }
         else if ($("#performance-metrics-radio").hasClass('active')) {
             settings.metricType = 'performance';
             settings.metricValue = $("select.performance-metrics").val();
             settings.elementValue = $("select.performance-elements").val();
-            if ($("#chart-title-btn").hasClass('active')) {
-                settings.chartTitle = $('select.performance-metrics option:selected').text();
-            } else {
-                settings.chartTitle = "";
-            }
+
+            defaultTitle = $('select.performance-metrics option:selected').text();
+
             settings.seriesTitle = $('select.performance-metrics option:selected').text();
         }
         else if ($("#network-metrics-radio").hasClass('active')) {
@@ -368,12 +364,8 @@
             settings.metricValue = $("select.network-metrics").val();
             settings.elementValue = $("select.network-elements").val();
             settings.portValue = $("select.network-ports").val();
-            if ($("#chart-title-btn").hasClass('active')) {
-                settings.chartTitle = $('select.network-metrics option:selected').text() + ' for ' + $('select.network-elements option:selected').text();
+            defaultTitle = $('select.network-metrics option:selected').text() + ' for ' + $('select.network-elements option:selected').text();
                             
-            } else {
-                settings.chartTitle = "";
-            }
             settings.seriesTitle = $('select.network-metrics option:selected').text();
         }
 
@@ -383,6 +375,23 @@
         else
         {
             settings.showLegend = false;
+        }
+
+        if ($("#chart-title-btn").hasClass('active')) {
+            customTitle = $("#custom-chart-title").val();
+            if (customTitle != "Custom Title")
+            {
+                settings.chartTitle = customTitle;
+            }
+            else
+            {
+                settings.chartTitle = defaultTitle;
+            }
+            $("#custom-chart-title").val(settings.chartTitle);
+        }
+        else
+        {
+            settings.chartTitle = "";
         }
         
         
@@ -447,6 +456,10 @@
         }
         if (chartTitle === "") {
             $("#chart-title-btn").removeClass('active');
+        }
+        else
+        {
+            $("#custom-chart-title").val(settings.chartTitle);
         }
         if (showLegend === false)
         {
