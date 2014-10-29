@@ -579,7 +579,7 @@ elseif ($query_type == "network") {
 				$my_metric_name = substr($my_metric_name, 5);
 			}
 
-			$series_name = $port_names[$singlePort] . " - " . $my_metric_name;
+			$series_name = $port_names[$my_port] . " - " . $my_metric_name;
 
 			$my_temp_array = array();
 
