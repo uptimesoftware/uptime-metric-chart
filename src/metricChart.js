@@ -672,7 +672,21 @@
             series: [],
             legend: {
                 enabled: settings.showLegend
-            }};
+                    },
+            navigation: {
+                    buttonOptions: {
+                        verticalAlign: 'bottom',
+                        y: -20
+                    }
+                },
+            exporting: {
+                    csv: {
+                        dateFormat: '%Y-%m-%d - %H:%M',
+                        itemDelimiter: ','
+                    }
+            }
+
+        };
 
 
  
