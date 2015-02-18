@@ -10,7 +10,7 @@
 	</gadget_version>
 	<grid_info>
 		<supported_versions>
-			7.3
+			7.3,7.4
 		</supported_versions>
 		<supported_platforms>
 			windows,linux
