@@ -20,15 +20,15 @@ The new version of the Metric Chart now allows you to graph metrics for multiple
 
 
 ###Version Compatibility
-                        | 7.6 | 7.5 | 7.4 | 7.3 | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
-    --------------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-      Metric Chart v2.9 |     |     |     |  X  |     |     |     |     |     |     |     |     |
-      Metric Chart v2.8 |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |     
-      Metric Chart v2.7 |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |     
-      Metric Chart v2.6 |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
-      Metric Chart v2.5 |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
-      Metric Chart v2.0 |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
-      Metric Chart v1.0 |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
+                        | 7.7 | 7.6 | 7.5 | 7.4 | 7.3 | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
+    --------------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+      Metric Chart v2.9 |     |     |     |     |  X  |     |     |     |     |     |     |     |     |
+      Metric Chart v2.8 |  X  |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |     
+      Metric Chart v2.7 |  X  |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |     
+      Metric Chart v2.6 |  X  |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
+      Metric Chart v2.5 |  X  |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
+      Metric Chart v2.0 |  X  |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
+      Metric Chart v1.0 |  X  |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |
 
 ###Known Limitations
 By default, Metric Chart currently expects a standard Monitoring Station configuration, with the bundled MySQL database on either Windows or Linux.  However, it also supports Oracle and SQLServer/MSSQL Datastores via ODBC Drivers see the [readme for ODBC Driver Install Steps & Additional Details] (../master/src/stable/readme.txt)
