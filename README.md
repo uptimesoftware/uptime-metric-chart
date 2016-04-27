@@ -2,9 +2,6 @@
 ###Description
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to housing your new graphs.
 
-##New in v2.9.1
-* supports Uptime 7.7
-
 ##New in v2.9
 * Improved Dropdown Behaviour ( Less Refreshing, Respects User Element Permissons)
 * No longer refreshes while in edit mode
