@@ -2,6 +2,9 @@
 ###Description
 The Metric Chart gadget makes it possible to graph metrics collected by up.time in just a few clicks.  You can now finally visualize those important metrics on your custom dashboard in the form of beautiful line or area graphs!  As a bonus, we're also throwing in some additional dashboard layouts, well suited to housing your new graphs.
 
+##New in v2.9.1
+* supports Uptime 7.7
+
 ##New in v2.9
 * Improved Dropdown Behaviour ( Less Refreshing, Respects User Element Permissons)
 * No longer refreshes while in edit mode
@@ -14,7 +17,6 @@ The Metric Chart gadget makes it possible to graph metrics collected by up.time 
 ##New Features in v2.7
 * Now supports SQLServer backends - [readme for ODBC Driver Install Steps & Additional Details](http://the-grid.uptimesoftware.com/gadget/uptime-metric-chart.html)
 
-
 ##New Features in v2.5
 The new version of the Metric Chart now allows you to graph metrics for multiple elements on the same graph. Along with support for Network Device Metrics, and Retained Service Monitor Metrics that have been 'Saved For Graphing'.
 
@@ -22,7 +24,7 @@ The new version of the Metric Chart now allows you to graph metrics for multiple
 ###Version Compatibility
                         | 7.7 | 7.6 | 7.5 | 7.4 | 7.3 | 7.2 | 7.1 | 7.0 | 6.0 | 5.5 | 5.4 | 5.3 | 5.2 |
     --------------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-      Metric Chart v2.9 |     |     |     |     |  X  |     |     |     |     |     |     |     |     |
+      Metric Chart v2.9 |  X  |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |
       Metric Chart v2.8 |  X  |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |     
       Metric Chart v2.7 |  X  |  X  |  X  |  X  |  X  |     |     |     |     |     |     |     |     |     
       Metric Chart v2.6 |  X  |  X  |  X  |  X  |     |  X  |     |     |     |     |     |     |     |

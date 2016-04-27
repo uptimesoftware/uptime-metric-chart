@@ -6,11 +6,11 @@
         <Require feature="dynamic-height" />
     </ModulePrefs>
 	<gadget_version>
-		2.9
+		2.9.1
 	</gadget_version>
 	<grid_info>
 		<supported_versions>
-			7.3,7.4,7.5,7.6
+			7.3,7.4,7.5,7.6,7.7
 		</supported_versions>
 		<supported_platforms>
 			windows,linux
