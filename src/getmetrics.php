@@ -358,7 +358,8 @@ elseif ($query_type == "performance") {
 			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
 					from performance_sample ps
 					join performance_aggregate pa on pa.sample_id = ps.id
-					join entity_configuration ec on ec.entity_id = ps.uptimehost_id
+					join entity_configuration_current ecc on ecc.host_id = ps.uptimehost_id
+					join entity_configuration ec on ec.entity_configuration_id = ecc.configuration_id
 					where ps.uptimehost_id = $element_id
 					and ps.sample_time > date_sub(now(),interval  ". $time_frame . " second)
 					order by ps.sample_time";
@@ -367,7 +368,8 @@ elseif ($query_type == "performance") {
 			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
 					from performance_sample ps
 					join performance_aggregate pa on pa.sample_id = ps.id
-					join entity_configuration ec on ec.entity_id = ps.uptimehost_id
+					join entity_configuration_current ecc on ecc.host_id = ps.uptimehost_id
+					join entity_configuration ec on ec.entity_configuration_id = ecc.configuration_id
 					where ps.uptimehost_id = $element_id
 					and ps.sample_time > sysdate - interval  '". $time_frame . "' second
 					order by ps.sample_time";
@@ -378,7 +380,8 @@ elseif ($query_type == "performance") {
 			$sql = "Select ps.uptimehost_id, pa.sample_id, ps.sample_time, pa.free_mem, ec.memsize
 					from performance_sample ps
 					join performance_aggregate pa on pa.sample_id = ps.id
-					join entity_configuration ec on ec.entity_id = ps.uptimehost_id
+					join entity_configuration_current ecc on ecc.host_id = ps.uptimehost_id
+					join entity_configuration ec on ec.entity_configuration_id = ecc.configuration_id
 					where ps.uptimehost_id = $element_id
 					and ps.sample_time > DATEADD(second, -". $time_frame . ", GETDATE())
 					order by ps.sample_time";
