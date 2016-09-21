@@ -678,7 +678,7 @@
         return new UPTIME.pub.gadgets.Dimensions(Math.max(100, dimensions.width - 5), Math.max(100, dimensions.height));
     }
     function onBadAjax(error) {
-        displayStatusBar(error, "Error Communicating with up.time");
+        displayStatusBar(error, "Error Communicating with Uptime");
     }
     function gadgetDimOn() {
         $.each(divsToDim, function(i, d) {
