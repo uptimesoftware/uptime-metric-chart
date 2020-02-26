@@ -225,7 +225,7 @@ class uptimeApi {
             // get the list of monitors for each element
             $monitorsStatus = $elementStatus['monitorStatus'];
             // for each monitor, add it to the array
-            if (count($monitorsStatus) > 0) {
+            if (count((array)$monitorsStatus) > 0) {
                 foreach ($monitorsStatus as $monitor) {
                     array_push($output, $monitor);
                 }
@@ -246,7 +246,7 @@ class uptimeApi {
     // Monitor Helper Functions
     // Add last transition times
     protected function addLengthOfOutages(&$monitors) {
-        if (count($monitors) > 0) {
+        if (count((array)$monitors) > 0) {
             $now = new DateTime();
             foreach ($monitors as &$monitor) {
                 $status_since_ts = strtotime($monitor['lastTransitionTime']);   // unix timestamp
@@ -319,7 +319,7 @@ class uptimeApi {
     }
     function sortByOutageLengthInSeconds($arrMonitors) {
         // don't bother sorting if there's none or only one
-        if (count($arrMonitors) > 1) {
+        if (count((array)$arrMonitors) > 1) {
             $oriArrMonitors = $arrMonitors; // copy of the original array
             $newArrMonitors = array();  // new array of monitors
             $arrOutageSeconds = array();    // hold the IDs and the length of the outages ("statusDifferenceInSeconds")
@@ -329,7 +329,7 @@ class uptimeApi {
                 //$monitor = $arrMonitors[$i];
                 $lowest_key = 0;
                 $lowest_val = -1;
-                $oriCount = count($arrMonitors);
+                $oriCount = count((array)$arrMonitors);
                 for ($x = 0; $x < $oriCount; $x++) {
                     $mon = $arrMonitors[$x];
                     if ($lowest_val < 0) {
@@ -357,8 +357,8 @@ class uptimeApi {
     }
     function addToArray(&$arrPile, $arrMore) {
         // add more to the pile (arrays)
-        $baseId = count($arrPile);
-        if (count($arrMore) > 0) {
+        $baseId = count((array)$arrPile);
+        if (count((array)$arrMore) > 0) {
             foreach ($arrMore as $more) {
                 $arrPile[$baseId] = $more;
                 $baseId++;
@@ -444,12 +444,12 @@ class uptimeApi {
         if ( preg_match('/\&/', $filter) ) {
             $tmp_arr = explode('&', $filter);
         }
-        if ( is_array($tmp_arr) && count($tmp_arr) >= 1) {
+        if ( is_array($tmp_arr) && count((array)$tmp_arr) >= 1) {
             foreach($tmp_arr as $f) {
                 // split key/value pairs by "="
                 $cur_filter_arr = explode('=', trim($f), 2);
                 // verify the key/value pair
-                if ( count($cur_filter_arr) == 2 && strlen(trim($cur_filter_arr[0])) > 0 && strlen(trim($cur_filter_arr[1])) > 0) {
+                if ( count((array)$cur_filter_arr) == 2 && strlen(trim($cur_filter_arr[0])) > 0 && strlen(trim($cur_filter_arr[1])) > 0) {
                     // let's add it to the filter array
                     $filter_arr[trim($cur_filter_arr[0])] = trim($cur_filter_arr[1]);
                 }
@@ -463,7 +463,7 @@ class uptimeApi {
         if ( strlen(trim($filter)) > 0 && strlen(trim($filter)) > 0 ) {
             $filter_arr = $this->parseFilterString($filter);
             // now that the key/value pairs are in an array ($filter_arr), let's check if any filter has been applied
-            if ( count($filter_arr) > 0 && count($output) > 0 ) {
+            if ( count((array)$filter_arr) > 0 && count((array)$output) > 0 ) {
                 $needToReset = false;
                 // check the first level of the output array
                 foreach ($output as $o_key => $line) {

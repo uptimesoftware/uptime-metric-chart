@@ -46,7 +46,7 @@ if (isset($_GET['time_frame'])){
 if (isset($_GET['monitor'])){
     $service_monitor = explode("-", $_GET['monitor']);
     $erdc_parameter_id = $service_monitor[0];
-    if ( count ($service_monitor) > 1)
+    if ( count ((array)$service_monitor) > 1)
     {
         $data_type_id = $service_monitor[1];
     }
@@ -103,11 +103,11 @@ if ($query_type == "elements_for_performance") {
 
     $elements = $uptime_api->getElements("type=Server&isMonitored=1");
 
-    foreach ($elements as $d) {
+    foreach ((array)$elements as $d) {
         if (!preg_match("/Vcenter/", $d['typeSubtype'] ) && !preg_match("/HyperVHost/", $d['typeSubtype']))
         {
             $has_ppg = False;
-            foreach($d['monitors'] as $monitor)
+            foreach((array)$d['monitors'] as $monitor)
             {
                 if($monitor['name'] == "Platform Performance Gatherer")
                 {
@@ -139,7 +139,7 @@ elseif ($query_type == "groups_for_performance") {
 
     $groups = $uptime_api->getGroups();
 
-    foreach ($groups as $d) {
+    foreach ((array)$groups as $d) {
         $json[$d['name']] = $d['id'];
     }
 
@@ -160,7 +160,7 @@ elseif ($query_type == "views_for_performance") {
             
         $result = $db->execQuery($sql);
         
-        foreach ($result as $row) {
+        foreach ((array)$result as $row) {
             $json[$row['NAME']] = $row['ID'];
         }
     
@@ -191,7 +191,7 @@ elseif ($query_type == "monitors") {
             ";
 
     $result = $db->execQuery($sql);
-    foreach ($result as $row) {
+    foreach ((array)$result as $row) {
 
             $my_data_type_id = $row['DATA_TYPE_ID'];
             if ($my_data_type_id == 2 or $my_data_type_id == 3 or $my_data_type_id == 6) {              
@@ -230,7 +230,7 @@ elseif ($query_type == "elements_for_monitor") {
 
         $result = $db->execQuery($sql);
         
-        foreach ($result as $row) {
+        foreach ((array)$result as $row) {
             $v = $row['ENTITY_ID'] . "-" . $row['ERDC_INSTANCE'];
             $k = $row['DISPLAY_NAME'] . " - " . $row['MONITOR_NAME'];
             $json[$k] = $v;
@@ -249,7 +249,7 @@ elseif ($query_type == "groups_for_monitor") {
 
     $groups = $uptime_api->getGroups();
 
-    foreach ($groups as $d) {
+    foreach ((array)$groups as $d) {
         $json[$d['name']] = $d['id'];
     }
 
@@ -270,7 +270,7 @@ elseif ($query_type == "views_for_monitor") {
             
         $result = $db->execQuery($sql);
         
-        foreach ($result as $row) {
+        foreach ((array)$result as $row) {
             $k = $row['NAME'];
             $v = $row['ID'];
             $json[$k] = $v;
@@ -289,7 +289,7 @@ elseif ($query_type == "ranged_objects") {
     $db = setupDB();
 
     $i = 0;
-    foreach ($elementList as $element_id_and_erdc_id) {
+    foreach ((array)$elementList as $element_id_and_erdc_id) {
         $ids = explode("-", $element_id_and_erdc_id);
         $element_id = $ids[0];
         $erdc_instance_id = $ids[1];
@@ -302,7 +302,7 @@ elseif ($query_type == "ranged_objects") {
 
         $result = $db->execQuery($sql);
         
-        foreach ($result as $row) {
+        foreach ((array)$result as $row) {
             $v = $row['INSTANCE_ID']. "-" . $row['ID'];
             $k = $row['OBJECT_NAME'];
             $json[$k] = $v;
@@ -323,7 +323,7 @@ elseif ($query_type == "listNetworkDevice") {
 
     $elements = $uptime_api->getElements("type=NetworkDevice&isMonitored=1");
             
-    foreach ($elements as $row) {
+    foreach ((array)$elements as $row) {
         $k = $row['name'];
         $v = $row['id'];
         $json[$k] = $v;
@@ -344,7 +344,7 @@ elseif ($query_type == "devicePort") {
             where pc.entity_id = $elementList[0]";
             
     $result = $db->execQuery($sql);
-    foreach($result as $row) {
+    foreach((array)$result as $row) {
             $k = $row['IF_NAME'];
             $v = $row['IF_INDEX'];
             $json[$k] = $v;
@@ -384,7 +384,7 @@ function getUsersElementIDs($uptime_api_username, $uptime_api_password, $uptime_
 
     $elements = $uptime_api->getElements("isMonitored=1");
     $element_ids = array();
-    foreach ($elements as $e)
+    foreach ((array)$elements as $e)
     {
         array_push($element_ids, $e['id']);
     }

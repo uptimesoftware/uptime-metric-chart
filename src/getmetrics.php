@@ -31,7 +31,7 @@ if (isset($_GET['time_frame'])){
 if (isset($_GET['monitor'])){
 	$service_monitor = explode("-", $_GET['monitor']);
 	$erdc_parameter_id = $service_monitor[0];
-	if ( count ($service_monitor) > 1)
+	if ( count ((array)$service_monitor) > 1)
 	{
 		$data_type_id = $service_monitor[1];
 	}
@@ -72,7 +72,7 @@ if ($query_type == "servicemonitor") {
 	//$elementList is an array where each item is elementID-erdcID 	
 	$i = 0;
 	if (($data_type_id == 2) ||($data_type_id == 3)) {
-		foreach ($elementList as $element_id_and_erdc_id) {
+		foreach ((array)$elementList as $element_id_and_erdc_id) {
 		
 			$ids = explode("-", $element_id_and_erdc_id);
 			$element_id = $ids[0];
@@ -147,7 +147,7 @@ if ($query_type == "servicemonitor") {
 				$result = $db->execQuery($sql);
 			
 				$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-				foreach ($result as $row) {
+				foreach ((array)$result as $row) {
 					$sample_time = strtotime($row['SAMPLETIME'])-$offset;
 					if ($sample_time >= $from_time) {
 						$x = $sample_time * 1000;
@@ -179,7 +179,7 @@ if ($query_type == "servicemonitor") {
 }
 	elseif ($data_type_id == 6) {
 		
-		foreach($objectList as $single_ranged_object) {
+		foreach((array)$objectList as $single_ranged_object) {
 			
 			$element_and_ranged = explode("-",$single_ranged_object);
 			$erdc_instance_id = $element_and_ranged[0];
@@ -238,7 +238,7 @@ if ($query_type == "servicemonitor") {
 				$result = $db->execQuery($sql);
 
 				$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-				foreach($result as $row) {
+				foreach((array)$result as $row) {
 					$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 					if ($sample_time >= $from_time) {
 						$x = $sample_time * 1000;
@@ -289,7 +289,7 @@ if ($query_type == "servicemonitor") {
 // Get performance metrics
 elseif ($query_type == "performance") {
 
-	foreach ($elementList as $element_id) {
+	foreach ((array)$elementList as $element_id) {
 
 
 		if ($performance_monitor == "cpu") {
@@ -395,7 +395,7 @@ elseif ($query_type == "performance") {
      
 			$result = $db->execQuery($sql);
 
-			foreach($result as $row) {
+			foreach((array)$result as $row) {
 				$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 				$x = $sample_time * 1000;
 				if ($performance_monitor == "cpu") {
@@ -446,7 +446,7 @@ elseif ($query_type == "network") {
 	$network_metrics = explode(",", $performance_monitor);
 	$network_perf_data = array();
 
-	foreach($ports as $singlePort) {
+	foreach((array)$ports as $singlePort) {
 
 		if ($db->dbType == "mysql"){
 		$sql = "select * from net_device_perf_port pp 
@@ -485,10 +485,10 @@ elseif ($query_type == "network") {
 			$result = $db->execQuery($sql);
 			
 			$from_time = strtotime("-" . (string)$time_frame . " seconds")-$offset;   
-			foreach ($result as $row) {
+			foreach ((array)$result as $row) {
 				$sample_time = strtotime($row['SAMPLE_TIME'])-$offset;
 				$x = $sample_time * 1000;
-				foreach ($network_metrics as $network_metric)
+				foreach ((array)$network_metrics as $network_metric)
 				{
 					if(preg_match("/kbps/",$network_metric)) {
 
@@ -527,7 +527,7 @@ elseif ($query_type == "network") {
 
 		//re-arrange the $network_perf_data array into timeseries data
 		//also put together a name for each series
-		foreach ($network_perf_data as $network_metric_key => $network_metric_val)
+		foreach ((array)$network_perf_data as $network_metric_key => $network_metric_val)
 		{
 			
 			$key_exploded = explode("-", $network_metric_key);
