@@ -21,7 +21,7 @@ class uptimeDB
 	private $ORACLE_ODBC_DRIVER = "ODBC Driver for Oracle";
 
 	//Windows MSSQL ODBC Driver
-	private $MSSQL_ODBC_DRIVER = "ODBC Driver for SQL Server";
+	private $MSSQL_ODBC_DRIVER = "{ODBC Driver 17 for SQL Server}";
 
 
 	public $dbType;
@@ -127,7 +127,8 @@ class uptimeDB
 		}
 		elseif ($this->dbType == "mssql")
 		{
-			$this->DB = odbc_connect($this->MSSQL_ODBC_DRIVER, $this->dbUsername, $this->dbPassword);
+			//$this->DB = odbc_connect($this->MSSQL_ODBC_DRIVER, $this->dbUsername, $this->dbPassword);
+			$this->DB = odbc_connect("Driver=" . $this->MSSQL_ODBC_DRIVER . ";Server=" . $this->dbHost . ";Database=" . $this->dbName . ";port=" . $this->dbPort, $this->dbUsername, $this->dbPassword, SQL_CUR_USE_ODBC);
 			if (!$this->DB)
 			{
 				printf("ODBC Connection Failed: " . odbc_errormsg());
