@@ -12,16 +12,16 @@ class uptimeDB
 
 
 	//Linux Oracle ODBC Driver
-	//private $ORACLE_ODBC_DRIVER = "/usr/lib/oracle/12.1/client64/lib/libsqora.so.12.1";
+	//private $ORACLE_ODBC_DRIVER = "/usr/lib/oracle/19.6/client64/lib/libsqora.so.19.1";
 
 	//Linux MSSQL ODBC Driver 
 	//private $MSSQL_ODBC_DRIVER = "/usr/lib64/libtdsodbc.so.0";
 
 	//Windows Oracle ODBC Driver
-	private $ORACLE_ODBC_DRIVER = "ODBC Driver for Oracle";
+	//private $ORACLE_ODBC_DRIVER = "ODBC Driver for Oracle";
 
 	//Windows MSSQL ODBC Driver
-	private $MSSQL_ODBC_DRIVER = "{ODBC Driver 17 for SQL Server}";
+	//private $MSSQL_ODBC_DRIVER = "{ODBC Driver 17 for SQL Server}";
 
 
 	public $dbType;
@@ -115,7 +115,12 @@ class uptimeDB
 		}
 		elseif ($this->dbType == "oracle")
 		{
-			$this->DB = odbc_connect($this->ORACLE_ODBC_DRIVER, $this->dbUsername, $this->dbPassword);
+			//For Windows
+			//$this->DB = odbc_connect($this->ORACLE_ODBC_DRIVER, $this->dbUsername, $this->dbPassword);
+
+			//For Linux
+			//$this->DB = odbc_connect("Driver=" . $this->ORACLE_ODBC_DRIVER . ";SERVER=" . $this->dbHost . ";DATABASE=" . $this->dbName ,$this->dbUsername, $this->dbPassword);
+
 			if (!$this->DB)
 			{
 				printf("ODBC Connection Failed: " . odbc_errormsg());
