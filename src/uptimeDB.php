@@ -119,8 +119,8 @@ class uptimeDB
 			//$this->DB = odbc_connect($this->ORACLE_ODBC_DRIVER, $this->dbUsername, $this->dbPassword);
 
 			//For Linux
-			//$this->DB = odbc_connect("Driver=" . $this->ORACLE_ODBC_DRIVER . ";SERVER=" . $this->dbHost . ";DATABASE=" . $this->dbName ,$this->dbUsername, $this->dbPassword);
-
+			//$this->DB = odbc_connect("Driver=" . $this->ORACLE_ODBC_DRIVER . ";dbq=" . $this->dbHost . ":" . $this->dbPort . "/" . $this->dbName,$this->dbUsername, $this->dbPassword);
+			
 			if (!$this->DB)
 			{
 				printf("ODBC Connection Failed: " . odbc_errormsg());
