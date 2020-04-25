@@ -133,7 +133,7 @@ class uptimeDB
 		elseif ($this->dbType == "mssql")
 		{
 			//$this->DB = odbc_connect($this->MSSQL_ODBC_DRIVER, $this->dbUsername, $this->dbPassword);
-			$this->DB = odbc_connect("Driver=" . $this->MSSQL_ODBC_DRIVER . ";Server=" . $this->dbHost . ";Database=" . $this->dbName . ";port=" . $this->dbPort, $this->dbUsername, $this->dbPassword, SQL_CUR_USE_ODBC);
+			$this->DB = odbc_connect("Driver=" . $this->MSSQL_ODBC_DRIVER . ";Server=" . $this->dbHost . ";Database=" . $this->dbName . ";port=" . $this->dbPort, $this->dbUsername, $this->dbPassword);
 			if (!$this->DB)
 			{
 				printf("ODBC Connection Failed: " . odbc_errormsg());
