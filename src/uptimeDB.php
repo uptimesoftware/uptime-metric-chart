@@ -76,7 +76,7 @@ class uptimeDB
 								if (preg_match("/^dbPassword.*/", $buffer)) // Check for string.
 								{
 										$data = preg_split("/^dbPassword=/", $buffer);
-										$this->dbPassword = rtrim($data[1]);
+										$this->dbPassword = strToDecrypt(rtrim($data[1]));
 								}
 						}
 						fclose($handle); // Close the file.
@@ -170,6 +170,18 @@ class uptimeDB
 		return false;
 
 	}
+
+	function strToDecrypt($strToDecrypt) {
+        static $OPENSSL_CIPHER_NAME = "aes-128-cbc"; //Name of OpenSSL Cipher 
+    
+        $key = 'AF632F3208204164'; #Same as in JAVA
+        $ivEncodedByte = "ZmVkY2JhOTg3NjU0MzIxMA==";
+        $decryptedData = openssl_decrypt(base64_decode($strToDecrypt), $OPENSSL_CIPHER_NAME, $key, OPENSSL_RAW_DATA, base64_decode($ivEncodedByte));
+        if ($decryptedData == "") {
+            return $strToDecrypt;
+        }
+        return $decryptedData;
+    }
 
 	private function execMysqlQuery($sql)
 	{
